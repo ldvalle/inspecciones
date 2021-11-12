@@ -1,0 +1,17 @@
+call rdd_notificacion_pago(
+:#${header.id_empresa},
+:#${header.cod_recaudador},
+:#${header.cod_oficina_recaudador},
+:#${header.cod_caja_recaudador},
+:#${header.cod_barra},
+:#${header.numero_comprobante},
+:#${header.fecha_rendicion},
+:#${header.fecha_pago_recaudador},
+:#${header.hora_pago_recaudador},
+:#${header.sesion_bco},
+:#${header.cod_medio_pago},
+:#${header.info_medio_pago1},
+:#${header.info_medio_pago2},
+:#${header.info_medio_pago3},
+:#${header.info_medio_pago4},
+:#${header.info_medio_pago5})
