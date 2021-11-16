@@ -32,7 +32,7 @@ public class InspeSolicitudDTO {
     private String  dir_numero;
     private String  dir_piso;
     private String  dir_depto;
-    private String  dir_cod_postal;
+    private int  dir_cod_postal;
     private String  dir_cod_entre;
     private String  dir_nom_entre;
     private String  dir_cod_entre1;
@@ -54,6 +54,7 @@ public class InspeSolicitudDTO {
     private String  modelo_medidor;
     private Long    nro_medidor;
     private int     difDiasEntre;
+    private String  ejecuto_inspeccion;
 
     /* Setters */
     public void setNro_solicitud(Long nro_solicitud) {
@@ -172,7 +173,7 @@ public class InspeSolicitudDTO {
         this.dir_depto = dir_depto;
     }
 
-    public void setDir_cod_postal(String dir_cod_postal) {
+    public void setDir_cod_postal(int dir_cod_postal) {
         this.dir_cod_postal = dir_cod_postal;
     }
 
@@ -259,6 +260,8 @@ public class InspeSolicitudDTO {
     public void setDifDiasEntre(int difDiasEntre) {
         this.difDiasEntre = difDiasEntre;
     }
+
+    public void setEjecuto_inspeccion(String ejecuto_inspeccion){this.ejecuto_inspeccion = ejecuto_inspeccion; }
 
     /* Getters */
     public Long getNro_solicitud() {
@@ -377,7 +380,7 @@ public class InspeSolicitudDTO {
         return dir_depto;
     }
 
-    public String getDir_cod_postal() {
+    public int getDir_cod_postal() {
         return dir_cod_postal;
     }
 
@@ -464,4 +467,6 @@ public class InspeSolicitudDTO {
     public int getDifDiasEntre() {
         return difDiasEntre;
     }
+
+    public String getEjecuto_inspeccion(){return ejecuto_inspeccion; }
 }

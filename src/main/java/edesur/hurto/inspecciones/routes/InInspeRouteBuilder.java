@@ -20,7 +20,7 @@ public class InInspeRouteBuilder extends BaseRouteBuilder {
                 .log(LoggingLevel.DEBUG, logname, "Solicitud Inspeccion para cliente ${header.numero_cliente}")
                 .setHeader("response", body())
                 .transacted()
-                //.to("bean:generarSolicitud?method=CreateSolicitud(${header.idCaso}, ${header.numeroCliente}, ${header.codMotivo})&outputClass=edesur.hurto.inspecciones.model.InspeSolicitudResponse")
+
                 .to("bean:generarSolicitud?method=CreateSolicitud(${header.idCaso}, ${header.numeroCliente}, ${header.codMotivo})")
                 .choice()
                     .when().simple("${body.codigo_retorno} == '0'")

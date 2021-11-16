@@ -34,6 +34,7 @@ public class ClienteDTO {
     private Long    numero_medidor;
     private String  marca_medidor;
     private String  modelo_medidor;
+    private int     nDiasConfig;
 
     /* Setters & Getters */
     public Long getNumero_cliente() {
@@ -287,5 +288,9 @@ public class ClienteDTO {
     public String getModelo_medidor() {return modelo_medidor; }
 
     public void setModelo_medidor(String modelo_medidor) { this.modelo_medidor = modelo_medidor; }
+
+    public int getnDiasConfig(){return nDiasConfig; }
+
+    public void setnDiasConfig(int nDiasConfig ){this.nDiasConfig = nDiasConfig; }
 
 }
