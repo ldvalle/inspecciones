@@ -21,7 +21,13 @@ public class InInspeRouteBuilder extends BaseRouteBuilder {
                 .setHeader("response", body())
                 .transacted()
 
-                .to("bean:generarSolicitud?method=CreateSolicitud(${header.idCaso}, ${header.numeroCliente}, ${header.codMotivo})")
+                .choice()
+                    .when(header("numeroCliente").isLessThan(80000000))
+                            .to("bean:generarSolicitud?method=CreateSolicitud(${header.idCaso}, ${header.numeroCliente}, ${header.codMotivo})")
+                    .otherwise()
+                            .to("bean:generarSolicitudT23?method=CreateSolicitud(${header.idCaso}, ${header.numeroCliente}, ${header.codMotivo})")
+                .end()
+
                 .choice()
                     .when().simple("${body.codigo_retorno} == '0'")
                         .log(LoggingLevel.DEBUG, logname, "Solicitud Ingresada")
@@ -29,6 +35,16 @@ public class InInspeRouteBuilder extends BaseRouteBuilder {
                         .log(LoggingLevel.DEBUG, logname, "Solicitud No Ingresada")
                 .end();
 
+                //-------------------
+/*
+                .to("bean:generarSolicitud?method=CreateSolicitud(${header.idCaso}, ${header.numeroCliente}, ${header.codMotivo})")
+                .choice()
+                    .when().simple("${body.codigo_retorno} == '0'")
+                        .log(LoggingLevel.DEBUG, logname, "Solicitud Ingresada")
+                    .otherwise()
+                        .log(LoggingLevel.DEBUG, logname, "Solicitud No Ingresada")
+                .end();
+*/
         }
 /*
                 .to("sql:classpath:sql/rddNotiPago.sql?dataSource=#SynergiaDS&outputType=SelectOne&outputClass=edesur.rdd.srv.model.RddNotiResponse")

@@ -83,32 +83,9 @@ public class SolicitudInspeccion {
 			     ex.printStackTrace();
 			     throw new RuntimeException(ex);
 		    }
-
-          }else{
-/*
-            try {
-                iTarifaCliente = validaClienteT23(nroCliente);
-
-                if(iTarifaCliente > 1){
-                    if (RegSolicitudT23(idCaso, nroCliente, sCodMotivo, iTarifaCliente)) {
-                        regRes.setCodigo_retorno("1");
-                        regRes.setDescripcion_retorno("Solicitud T1 " + idCaso + " Registrada");
-                    } else {
-                        regRes.setCodigo_retorno("0");
-                        regRes.setDescripcion_retorno("Solicitud T1 " + idCaso + " NO Registrada");
-                    }
-                }else{
-                    regRes.setCodigo_retorno("01");
-                    regRes.setDescripcion_retorno("Cliente " + nroCliente + " de caso " + idCaso + " No Existe.");
-                }
-
-            }catch(Exception ex){
-                ex.printStackTrace();
-                throw new RuntimeException(ex);
-            }
-*/
+        }else {
             regRes.setCodigo_retorno("23");
-            regRes.setDescripcion_retorno("Cliente T23");
+            regRes.setDescripcion_retorno("Caso " + idCaso + " Entro como T1 pero es un T23");
         }
 
         return regRes;
@@ -531,10 +508,12 @@ public class SolicitudInspeccion {
         reg.setModelo_medidor(regCli.getModelo_medidor());
         reg.setNro_medidor(regCli.getNumero_medidor());
 
+        System.out.println("Cliente " + reg.getNumero_cliente());
         return reg;
     }
 
     private boolean GrabaNvaSol(InspeSolicitudDTO reg, Connection connection )throws SQLException{
+    String sLinea="";
 
         try(PreparedStatement stmt = connection.prepareStatement(INS_SOLICITUD)) {
             stmt.setInt(1, reg.getEstado());
@@ -598,22 +577,6 @@ public class SolicitudInspeccion {
         return nroSol;
     }
 
-    private boolean ProcesoT23(long nroCliente, int iTarifa, String sCodMotivo, Connection connection){
-
-        //Verificar que no tenga Individual Pendiente
-        //Si tiene querella agregar en comentarios
-        //Si tiene CNR agregar a comentarios.
-        //Si tiene accion tomada agregar en comentarios
-        //Levantar ultima solicitud
-        //Si tiene masiva solicitada se anexa a la individual
-        //Si tiene una inspe pendiente, se registra la ocurrencia
-        //Si tiene ultima inspe finalizada, se evalua los N dias
-        //Dependiendo del estado se genera solicitud o inspeccion
-        //Actualizar Caso
-        return true;
-    }
-
-
     private static final String SEL_VALIDA_T1 = "SELECT estado_cliente FROM cliente " +
             "WHERE numero_cliente = ? ";
 
@@ -657,7 +620,7 @@ public class SolicitudInspeccion {
             "c.correlativo_ruta, c.provincia, c.nom_provincia, " +
             "c.partido, c.nom_partido, c.comuna, " +
             "c.nom_comuna, c.cod_calle, c.nom_calle, " +
-            "c.nro_dir, c.piso_dir, c.depto_dir, " +
+            "c.nro_dir, nvl(c.piso_dir, ' '), nvl(c.depto_dir, ' '), " +
             "c.cod_entre, c.nom_entre, c.cod_entre1, " +
             "c.nom_entre1, c.barrio, c.nom_barrio, " +
             "c.nombre, c.tip_doc, c.nro_doc, " +

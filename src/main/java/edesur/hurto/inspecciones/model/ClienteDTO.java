@@ -35,6 +35,11 @@ public class ClienteDTO {
     private String  marca_medidor;
     private String  modelo_medidor;
     private int     nDiasConfig;
+    private int     tipoTarifaT23;
+    private int     estadoSuministro;
+    private int     tieneQuerella;
+    private int     tieneCNR;
+    private int     accionesTomadas;
 
     /* Setters & Getters */
     public Long getNumero_cliente() {
@@ -292,5 +297,21 @@ public class ClienteDTO {
     public int getnDiasConfig(){return nDiasConfig; }
 
     public void setnDiasConfig(int nDiasConfig ){this.nDiasConfig = nDiasConfig; }
+
+    public int getTipoTarifaT23(){return tipoTarifaT23; }
+    public void setTipoTarifaT23(int tipoTarifaT23){this.tipoTarifaT23 = tipoTarifaT23; }
+
+
+    public int getEstadoSuministro(){return estadoSuministro; }
+    public void setEstadoSuministro(int estadoSuministro){this.estadoSuministro = estadoSuministro; }
+
+    public int getTieneQuerella(){return tieneQuerella; }
+    public void setTieneQuerella(int tieneQuerella){this.tieneQuerella = tieneQuerella; }
+
+    public int getTieneCNR(){return tieneCNR; }
+    public void setTieneCNR(int tieneCNR){this.tieneCNR = tieneCNR; }
+
+    public int getAccionesTomadas(){return accionesTomadas; }
+    public void setAccionesTomadas(int accionesTomadas){this.accionesTomadas = accionesTomadas; }
 
 }

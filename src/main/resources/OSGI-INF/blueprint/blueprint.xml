@@ -27,12 +27,12 @@
     <bean id="generarSolicitud" class="edesur.hurto.inspecciones.beans.SolicitudInspeccion" >
 	    <property name="dataSource" ref="SynergiaDS" />
     </bean>
-<!--
+
     <bean id="generarSolicitudT23" class="edesur.hurto.inspecciones.beans.SolicitudInspeccionT23" >
         <property name="dataSourceSynergia" ref="SynergiaDS" />
         <property name="dataSourceCandela" ref="CandelaDS" />
     </bean>
--->
+
     <bean id="cargaClienteT1" class="edesur.hurto.inspecciones.beans.ClienteDAO" >
         <property name="dataSource" ref="SynergiaDS" />
     </bean>
@@ -51,4 +51,9 @@
                interface="javax.sql.DataSource"
                availability="mandatory"
                filter="(osgi.jndi.service.name=jdbc/SynergiaDS)" />
+
+    <reference id="CandelaDS"
+               interface="javax.sql.DataSource"
+               availability="mandatory"
+               filter="(osgi.jndi.service.name=jdbc/CandelaDS)" />
 </blueprint>
