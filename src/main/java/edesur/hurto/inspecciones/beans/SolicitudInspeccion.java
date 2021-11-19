@@ -61,7 +61,7 @@ public class SolicitudInspeccion {
 
               if(!validaMotivo(sCodMotivo)){
                   regRes.setCodigo_retorno("12");
-                  regRes.setDescripcion_retorno("Motivo Invalido ");
+                  regRes.setDescripcion_retorno("Codigo de Motivo Invalido ");
                   RegistraRechazo(idCaso, nroCliente, sCodMotivo, iTarifaCliente,12, "Motivo Invalido");
                   return regRes;
               }
@@ -326,7 +326,7 @@ public class SolicitudInspeccion {
             }
 
         }else{
-            iEstado=11;
+            iEstado=14;
             sComentario="Ya tiene Inspección Individual Pendiente.";
         }
 
