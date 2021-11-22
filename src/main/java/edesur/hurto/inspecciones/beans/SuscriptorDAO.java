@@ -114,4 +114,5 @@ public class SuscriptorDAO {
     private static final String SEL_ACCIONES = "SELECT COUNT(*) FROM tabla " +
             "WHERE nomtabla = 'ESSUM' " +
             "AND codtabla= ? ";
+
 }

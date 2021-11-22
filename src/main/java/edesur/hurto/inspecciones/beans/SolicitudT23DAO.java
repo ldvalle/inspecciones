@@ -32,7 +32,7 @@ public class SolicitudT23DAO {
         return reg;
     }
 
-    private boolean AnexaInspeccion(Long nroCliente, String sCodMotivo, InspeSolicitudDTO regUltimaSol, int iEstado, Connection connection)throws SQLException{
+    public boolean AnexaInspeccion(Long nroCliente, String sCodMotivo, InspeSolicitudDTO regUltimaSol, int iEstado, Connection connection)throws SQLException{
         long lNroInspeccion = 0;
         Long lNroSolAnterior = regUltimaSol.getNro_solicitud();
 
@@ -74,6 +74,32 @@ public class SolicitudT23DAO {
         return true;
     }
 
+    public boolean RegistraOcurrencia(Long nroSolicitud, Connection connection)throws  SQLException{
+        try(PreparedStatement stmt = connection.prepareStatement(UPD_SOL_OCURRENCIA)) {
+            stmt.setLong(1, nroSolicitud);
+
+            stmt.executeUpdate();
+        }
+
+        return true;
+    }
+
+    public String getSucursalPadre(String sSucursal, int iTarifa, Connection connection)throws  SQLException{
+        String sSucurPadre="";
+
+        try(PreparedStatement stmt=connection.prepareStatement(EXEC_SUCURSAL_PADRE)){
+            stmt.setString(1, sSucursal);
+            stmt.setInt(2, iTarifa);
+
+            try(ResultSet rs = stmt.executeQuery()) {
+                if(rs.next()){
+                    sSucurPadre=rs.getString(1);
+                }
+            }
+        }
+        return sSucurPadre;
+    }
+
 
     private static final String SEL_ULTIMA_SOL_T1 = "SELECT s1.nro_solicitud, s1.tipo_extractor, s1.estado,  " +
             "today - s1.fecha_estado dif_dias, " +
@@ -113,4 +139,32 @@ public class SolicitudT23DAO {
             "observacion2 = nvl(observacion2, '-') || '-se registro ocurrencia por ws Global' " +
             "WHERE nro_solicitud = ? ";
 
+    private static final String EXEC_SUCURSAL_PADRE = "inspect23:sucursal_padre(?, ?) ";
+
+    private static final String INS_SOLICITUD = "INSERT INTO inspect23:i3_solicitud ( tipo_extractor, es_individual, " +
+            "estado, fecha_estado, fecha_solicitud, numero_cliente, " +
+            "sucursal, plan, radio, correlativo_ruta, " +
+            "rol_solicitud, sucursal_rol_solic, " +
+            "dir_provincia, dir_nom_provincia, dir_partido, " +
+            "dir_nom_partido, dir_comuna, dir_nom_comuna, " +
+            "dir_cod_calle, dir_nom_calle, dir_numero, dir_piso, " +
+            "dir_depto, dir_cod_postal, dir_cod_entre, dir_nom_entre, " +
+            "dir_cod_entre1, dir_nom_entre1, dir_observacion, " +
+            "dir_cod_barrio, dir_nom_barrio, dir_manzana, " +
+            "nro_ult_inspec, fecha_ult_inspec, " +
+            "nombre, tipo_doc, nro_doc, telefono, mot_denuncia, " +
+            "observacion1 , tarifa, sucursal_cliente " +
+            ")VALUES( " +
+            "6, 'S', 1, TODAY, TODAY, ?, " +
+            "?, ?, " +
+            "?, ?, ?, ?, " +
+            "?, ?, ?,  " +
+            "?, ?, ?,  " +
+            "?, ?, ?, ?, " +
+            "?, ?, ?, ?, " +
+            "?, ?, ?, " +
+            "?, ?, ?,  " +
+            "?, ?, " +
+            "?, ?, ?, ?, ?, " +
+            "?, ?, ? ) ";
 }

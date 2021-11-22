@@ -41,7 +41,7 @@ public class InspeSolicitudDTO {
     private String  dir_cod_barrio;
     private String  dir_nom_barrio;
     private String  dir_manzana;
-    private int     nro_ult_inspec;
+    private long     nro_ult_inspec;
     private Date    fecha_ult_inspec;
     private String  nombre;
     private String  tip_doc;
@@ -55,6 +55,8 @@ public class InspeSolicitudDTO {
     private Long    nro_medidor;
     private int     difDiasEntre;
     private String  ejecuto_inspeccion;
+    private int     TipoTarifaT23;
+    private String  sucursalClienteT23;
 
     /* Setters */
     public void setNro_solicitud(Long nro_solicitud) {
@@ -209,7 +211,7 @@ public class InspeSolicitudDTO {
         this.dir_manzana = dir_manzana;
     }
 
-    public void setNro_ult_inspec(int nro_ult_inspec) {
+    public void setNro_ult_inspec(long nro_ult_inspec) {
         this.nro_ult_inspec = nro_ult_inspec;
     }
 
@@ -416,7 +418,7 @@ public class InspeSolicitudDTO {
         return dir_manzana;
     }
 
-    public int getNro_ult_inspec() {
+    public long getNro_ult_inspec() {
         return nro_ult_inspec;
     }
 
@@ -469,4 +471,20 @@ public class InspeSolicitudDTO {
     }
 
     public String getEjecuto_inspeccion(){return ejecuto_inspeccion; }
+
+    public int getTipoTarifaT23() {
+        return TipoTarifaT23;
+    }
+
+    public void setTipoTarifaT23(int tipoTarifaT23) {
+        TipoTarifaT23 = tipoTarifaT23;
+    }
+
+    public String getSucursalClienteT23() {
+        return sucursalClienteT23;
+    }
+
+    public void setSucursalClienteT23(String sucursalClienteT23) {
+        this.sucursalClienteT23 = sucursalClienteT23;
+    }
 }

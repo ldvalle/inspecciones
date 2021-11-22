@@ -61,7 +61,6 @@ public class SolicitudInspeccionT23 {
         }
 
         if(regCli.getEstado_cliente()==0){
-            //todo
             try(Connection conectSyn = dataSourceSynergia.getConnection()) {
                 //Validar Motivo
                 if(!validaMotivo(sCodMotivo, conectSyn)){
@@ -88,10 +87,9 @@ public class SolicitudInspeccionT23 {
                 if(regUltiSol.getNro_solicitud()>0){
                     if(regUltiSol.getTipo_extractor()!=6 && regUltiSol.getEstado()==1){
                         //Se anexa a la individual
-                        if (!srvSol.AnexaInspeccion(nroCliente, sCodMotivo, regUltimaSol, iEstado, connection)) {
+                        if (!srvSol.AnexaInspeccion(nroCliente, sCodMotivo, regUltiSol, iEstado, conectSyn)) {
                             return false;
                         }
-
                         iEstado=2;
                         sDescripcion="Se anexó a solicitud masiva solicitada.";
                         lNroNvaSolicitud=regUltiSol.getNro_solicitud();
@@ -99,12 +97,12 @@ public class SolicitudInspeccionT23 {
                     iEstado=regUltiSol.getEstado();
                     if(iEstado != 1 && iEstado !=3 && iEstado !=7){
                         //Se registra la ocurrencia
-
+                        if(! srvSol.RegistraOcurrencia(regUltiSol.getNro_solicitud(),conectSyn)){
+                            return false;
+                        }
                         sDescripcion = "Se registra ocurrencia con ultima solicitud pendiente.";
                         lNroNvaSolicitud=regUltiSol.getNro_solicitud();
                     }
-
-
                 }else{
                     // No tiene solicitudes anteriores
                     iEstado=1;
@@ -113,6 +111,13 @@ public class SolicitudInspeccionT23 {
 
                 if(iEstado==1 || iEstado==8){
                     //Generar la nueva solicitud
+                    regCli.setSucursal_padreT23(srvSol.getSucursalPadre(regCli.getSucursal(), regCli.getTipoTarifaT23(), conectSyn));
+
+                    regNvaSol=CargaNvaSolicitud(regCli, regUltiSol, sCodMotivo, iEstado);
+
+                    //Grabarla
+
+                    //Recuperar nro.de solicitud
                 }
 
                 //Insertar estado del caso
@@ -213,6 +218,60 @@ public class SolicitudInspeccionT23 {
             return false;
         }
         return true;
+    }
+
+    private InspeSolicitudDTO CargaNvaSolicitud(ClienteDTO regCli, InspeSolicitudDTO regUltiSol, String sMotDenuncia, int iEstado){
+        InspeSolicitudDTO reg=new InspeSolicitudDTO();
+        String sObservaciones="";
+
+        if(regCli.getTieneCNR()>0)
+            sObservaciones+= "Tiene CNR.";
+
+        if(regCli.getTieneQuerella()>0)
+            sObservaciones+= "Tiene Querella.";
+
+        if(regCli.getAccionesTomadas()>0)
+            sObservaciones+= "Tiene Acciones Tomadas.";
+
+        reg.setNumero_cliente(regCli.getNumero_cliente());
+        reg.setEstado(iEstado);
+        reg.setSucursal(regCli.getSucursal_padreT23());
+        reg.setPlan(regCli.getSector());
+        reg.setCorrelativo_ruta(regCli.getCorrelativo_ruta());;
+        reg.setRol_solicitud("GLOBAL");
+        reg.setSucursal_rol_solic(regCli.getSucursal_padreT23());
+        reg.setDir_provincia(regCli.getProvincia());
+        reg.setDir_nom_provincia(regCli.getNom_provincia());
+        reg.setDir_partido(regCli.getPartido());
+        reg.setDir_nom_partido(regCli.getNom_partido());
+        reg.setDir_comuna(regCli.getComuna());
+        reg.setDir_nom_comuna(regCli.getNom_comuna());
+        reg.setDir_cod_calle(regCli.getCod_calle());
+        reg.setDir_nom_calle(regCli.getNom_calle());
+        reg.setDir_numero(regCli.getNro_dir());
+        reg.setDir_piso(regCli.getPiso_dir());
+        reg.setDir_depto(regCli.getDepto_dir());
+        reg.setDir_cod_postal(regCli.getCod_postal());
+        reg.setDir_cod_entre(regCli.getCod_entre());
+        reg.setDir_nom_entre(regCli.getNom_entre());
+        reg.setDir_cod_entre1(regCli.getCod_entre1());
+        reg.setDir_nom_entre1(regCli.getNom_entre1());
+        reg.setDir_observacion(regCli.getObs_dir());
+        reg.setDir_cod_barrio(regCli.getBarrio());
+        reg.setDir_nom_barrio(regCli.getNom_barrio());
+        reg.setDir_manzana(regCli.getManzana());
+        reg.setNro_ult_inspec(regUltiSol.getNro_solicitud());
+        reg.setFecha_ult_inspec(regUltiSol.getFecha_ult_inspec());
+        reg.setNombre(regCli.getNombre());
+        reg.setTip_doc(regCli.getTip_doc());
+        reg.setNro_doc(regCli.getNro_doc());
+        reg.setTelefono(regCli.getTelefono());
+        reg.setMot_denuncia(sMotDenuncia);
+        reg.setObservacion1(sObservaciones);
+        reg.setTipoTarifaT23(regCli.getTipoTarifaT23());
+        reg.setSucursalClienteT23(regCli.getSucursal());
+
+        return reg;
     }
 
     private static final String SEL_CLIENTE = "SELECT estado_suscriptor, nombre from suscriptor " +

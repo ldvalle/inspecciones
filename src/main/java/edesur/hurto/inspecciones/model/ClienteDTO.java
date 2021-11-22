@@ -40,6 +40,8 @@ public class ClienteDTO {
     private int     tieneQuerella;
     private int     tieneCNR;
     private int     accionesTomadas;
+    private String  sucursal_padreT23;
+
 
     /* Setters & Getters */
     public Long getNumero_cliente() {
@@ -313,5 +315,8 @@ public class ClienteDTO {
 
     public int getAccionesTomadas(){return accionesTomadas; }
     public void setAccionesTomadas(int accionesTomadas){this.accionesTomadas = accionesTomadas; }
+
+    public String getSucursal_padreT23() { return sucursal_padreT23; }
+    public void setSucursal_padreT23(String sucursal_padreT23) { this.sucursal_padreT23 = sucursal_padreT23; }
 
 }
