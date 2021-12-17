@@ -2,10 +2,7 @@ package edesur.hurto.inspecciones.beans;
 
 import edesur.hurto.inspecciones.model.InspeSolicitudDTO;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 
 public class SolicitudT23DAO {
 
@@ -101,6 +98,74 @@ public class SolicitudT23DAO {
     }
 
 
+    public boolean InsertaSolicitud(InspeSolicitudDTO reg, Connection connection)throws  SQLException{
+        String sTipoTarifa = Integer.toString(reg.getTipoTarifaT23());
+        String sAux="";
+
+        try(PreparedStatement stmt = connection.prepareStatement(INS_SOLICITUD)) {
+            stmt.setInt(1, reg.getEstado());
+            stmt.setLong(2, reg.getNumero_cliente());
+            stmt.setString(3, reg.getSucursal_rol_solic().trim());
+            stmt.setInt(4, reg.getPlan());
+            stmt.setInt(5, reg.getRadio());
+            stmt.setLong(6, reg.getCorrelativo_ruta());
+            stmt.setString(7,"GLOBAL");
+            stmt.setString(8, reg.getSucursal_rol_solic().trim());
+            stmt.setString(9, reg.getDir_provincia().trim());
+            stmt.setString(10, reg.getDir_nom_provincia().trim());
+            stmt.setString(11, reg.getDir_partido().trim());
+            //stmt.setString(12, reg.getDir_nom_partido().trim());
+            stmt.setString(12, " ");
+            //stmt.setString(13, reg.getDir_comuna().trim());
+            stmt.setString(13, " ");
+            stmt.setString(14, reg.getDir_nom_comuna().trim());
+            stmt.setString(15, reg.getDir_cod_calle().trim());
+            stmt.setString(16, reg.getDir_nom_calle().trim());
+            stmt.setString(17, reg.getDir_numero().trim());
+            stmt.setString(18, reg.getDir_piso().trim());
+            stmt.setString(19, reg.getDir_depto().trim());
+            stmt.setInt(20, reg.getDir_cod_postal());
+            stmt.setString(21, reg.getDir_cod_entre().trim());
+            stmt.setString(22, reg.getDir_nom_entre().trim());
+            stmt.setString(23, reg.getDir_cod_entre1().trim());
+            stmt.setString(24, reg.getDir_nom_entre1().trim());
+            sAux=reg.getDir_observacion();
+            if(sAux == null){
+                //stmt.setString(25, " ");
+                stmt.setNull(25, Types.VARCHAR);
+            }else{
+                stmt.setString(25, reg.getDir_observacion().trim());
+            }
+            //stmt.setString(26, reg.getDir_cod_barrio().trim());
+            stmt.setString(26, " ");
+            //stmt.setString(27, reg.getDir_nom_barrio().trim());
+            stmt.setString(27, " ");
+            stmt.setString(28, reg.getDir_manzana().trim());
+            stmt.setLong(29, reg.getNro_ult_inspec());
+            //stmt.setTimestamp(30, new Timestamp(reg.getFecha_ult_inspec().getTime()));
+            stmt.setString(30, reg.getNombre().trim());
+            stmt.setString(31, reg.getTip_doc().trim());
+            stmt.setFloat(32, reg.getNro_doc());
+            stmt.setString(33, reg.getTelefono());
+            stmt.setString(34, reg.getMot_denuncia().trim());
+
+            sAux=reg.getObservacion1();
+            if(sAux== null){
+                //stmt.setString(35, " ");
+                stmt.setNull(35, Types.VARCHAR);
+
+            }else{
+                stmt.setString(35, reg.getObservacion1().trim());
+            }
+
+            stmt.setInt(36, reg.getTipoTarifaT23());
+            stmt.setString(37, reg.getSucursalClienteT23().trim());
+
+            stmt.executeUpdate();
+        }
+
+        return true;
+    }
     private static final String SEL_ULTIMA_SOL_T1 = "SELECT s1.nro_solicitud, s1.tipo_extractor, s1.estado,  " +
             "today - s1.fecha_estado dif_dias, " +
             "s1.sucursal_rol_solic, s1.numero_cliente, NVL(i.ejecuto_inspeccion, 'N') inspec_ejec " +
@@ -126,12 +191,12 @@ public class SolicitudT23DAO {
 
     private static final String SEL_SECUEN = "SELECT valor + 1 FROM secuen " +
             "WHERE sucursal = ? " +
-            "AND codigo = 'INSPEC' " +
+            "AND codigo = 'INST23' " +
             "FOR UPDATE ";
 
     private static final String UPD_SECUEN = "UPDATE secuen SET " +
             "valor = valor +1 " +
-            "WHERE codigo = 'INSPEC' " +
+            "WHERE codigo = 'INST23' " +
             "AND  sucursal = ? ";
 
     private static final String UPD_SOL_OCURRENCIA = "UPDATE inspect23:i3_solicitud SET " +
@@ -139,7 +204,7 @@ public class SolicitudT23DAO {
             "observacion2 = nvl(observacion2, '-') || '-se registro ocurrencia por ws Global' " +
             "WHERE nro_solicitud = ? ";
 
-    private static final String EXEC_SUCURSAL_PADRE = "inspect23:sucursal_padre(?, ?) ";
+    private static final String EXEC_SUCURSAL_PADRE = "{call inspect23:sucursal_padre(?, ?) } ";
 
     private static final String INS_SOLICITUD = "INSERT INTO inspect23:i3_solicitud ( tipo_extractor, es_individual, " +
             "estado, fecha_estado, fecha_solicitud, numero_cliente, " +
@@ -151,11 +216,11 @@ public class SolicitudT23DAO {
             "dir_depto, dir_cod_postal, dir_cod_entre, dir_nom_entre, " +
             "dir_cod_entre1, dir_nom_entre1, dir_observacion, " +
             "dir_cod_barrio, dir_nom_barrio, dir_manzana, " +
-            "nro_ult_inspec, fecha_ult_inspec, " +
+            "nro_ult_inspec, " +
             "nombre, tipo_doc, nro_doc, telefono, mot_denuncia, " +
             "observacion1 , tarifa, sucursal_cliente " +
             ")VALUES( " +
-            "6, 'S', 1, TODAY, TODAY, ?, " +
+            "6, 'S', ?, TODAY, TODAY, ?, " +
             "?, ?, " +
             "?, ?, ?, ?, " +
             "?, ?, ?,  " +
@@ -164,7 +229,8 @@ public class SolicitudT23DAO {
             "?, ?, ?, ?, " +
             "?, ?, ?, " +
             "?, ?, ?,  " +
-            "?, ?, " +
+            "?, " +
             "?, ?, ?, ?, ?, " +
             "?, ?, ? ) ";
+
 }

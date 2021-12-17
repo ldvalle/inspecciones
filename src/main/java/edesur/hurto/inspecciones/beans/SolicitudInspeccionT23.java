@@ -37,7 +37,7 @@ public class SolicitudInspeccionT23 {
             regRes.setDescripcion_retorno("Fallo carga de caso " + idCaso);
         }
         regRes.setCodigo_retorno("0");
-        regRes.setDescripcion_retorno("Cliente T23 - TODO ");
+        regRes.setDescripcion_retorno("Solicitud T23 Registrada ");
 
         return regRes;
     }
@@ -116,11 +116,20 @@ public class SolicitudInspeccionT23 {
                     regNvaSol=CargaNvaSolicitud(regCli, regUltiSol, sCodMotivo, iEstado);
 
                     //Grabarla
-
+                    if(! srvSol.InsertaSolicitud(regNvaSol, conectSyn)){
+                        conectSyn.rollback();
+                        return false;
+                    }
                     //Recuperar nro.de solicitud
+                    lNroNvaSolicitud = getNroNvaSol(regCli.getNumero_cliente(), conectSyn);
                 }
 
                 //Insertar estado del caso
+                if(!InsertaCaso(idCaso,nroCliente,sCodMotivo,regCli.getTipoTarifaT23(), iEstado, sDescripcion, lNroNvaSolicitud, conectSyn)){
+                    conectSyn.rollback();
+                    return false;
+                }
+
 
                 conectSyn.commit();
             }catch (Exception ex){
@@ -274,6 +283,22 @@ public class SolicitudInspeccionT23 {
         return reg;
     }
 
+    private long getNroNvaSol(long nroCliente, Connection conn)throws SQLException{
+        long lNroSol=0;
+
+        try(PreparedStatement stmt = conn.prepareStatement(SEL_NVA_SOLICITUD)) {
+            stmt.setLong(1,nroCliente);
+            try(ResultSet rs = stmt.executeQuery()) {
+                if(rs.next()){
+                    lNroSol=rs.getLong(1);
+                }
+            }
+        }
+
+        return lNroSol;
+    }
+
+
     private static final String SEL_CLIENTE = "SELECT estado_suscriptor, nombre from suscriptor " +
             "WHERE codigo_cuenta = ? ";
 
@@ -283,11 +308,11 @@ public class SolicitudInspeccionT23 {
             "cod_motivo, " +
             "tarifa, " +
             "cod_estado, " +
-            "desc_estado " +
+            "desc_estado, " +
             "nro_solicitud_inspeccion, " +
             "fecha_estado " +
             ")VALUES( " +
-            "?, ?, ?, ?, ?, ?, TODAY) ";
+            "?, ?, ?, ?, ?, ?, ?, TODAY) ";
 
     private static final String SEL_VALIDA_MOTIVO="SELECT COUNT(*) FROM tabla " +
             "WHERE nomtabla = 'MOTHUR' " +
@@ -299,6 +324,10 @@ public class SolicitudInspeccionT23 {
     private static final String SEL_INDIV_SOL = "SELECT COUNT(*) FROM inspect23:i3_solicitud " +
             "WHERE numero_cliente = ? " +
             "AND estado NOT IN (3, 7) " +
+            "AND tipo_extractor = 6 ";
+
+    private static final String SEL_NVA_SOLICITUD = "SELECT MAX(nro_solicitud) FROM inspect23:i3_solicitud " +
+            "WHERE numero_cliente = ? " +
             "AND tipo_extractor = 6 ";
 
 

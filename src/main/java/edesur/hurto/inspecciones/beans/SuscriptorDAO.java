@@ -43,6 +43,13 @@ public class SuscriptorDAO {
                     reg.setTelefono(rs.getString(23));
                     reg.setTipoTarifaT23(rs.getInt(24));
 
+                    if(reg.getNom_comuna().trim().equals("CAPITAL FEDERAL")){
+                        reg.setProvincia("C");
+                        reg.setNom_provincia("CAPITAL FEDERAL");
+                    }else{
+                        reg.setProvincia("B");
+                        reg.setNom_provincia("BUENOS AIRES");
+                    }
                 }else{
                     reg.setEstado_cliente(-1);
                 }
@@ -89,7 +96,7 @@ public class SuscriptorDAO {
     private static final String SEL_SUSCRIPTOR = "SELECT  s.codigo_cuenta, s.estado_suscriptor, " +
             "SUBSTR (LPAD (TO_CHAR (s.ruta_lectura),11,0),1, 2 ) || SUBSTR (LPAD (TO_CHAR (s.ruta_lectura),11,0),3, 2 ) sucu, " +
             "s.ciclo, s.ruta_lectura, SUBSTR (LPAD (TO_CHAR (s.ruta_lectura),11,0),3, 2 ) partido, nvl(s.localidad, ' '), " +
-            "p.codigo_calle, s.dir_calle, s.dir_numero, s.dir_piso, s.dir_departamento, " +
+            "p.codigo_calle, s.dir_calle, s.dir_numero, nvl(s.dir_piso, '-'), nvl(s.dir_departamento, '-'), " +
             "p.codigo_postal, p.codigo_entre1, s.dir_interseccion, p.codigo_entre2, s.dir_interseccion2, " +
             "p.codigo_manzana, s.nombre, estado_suministro, " +
             "s.tipo_identificacion,  to_char(nvl(s.nro_identificacion, 0)) || nvl(s.dv_identificacion, 0) nro_iden, " +
