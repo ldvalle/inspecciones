@@ -33,6 +33,10 @@
         <property name="dataSourceCandela" ref="CandelaDS" />
     </bean>
 
+    <bean id="consultarSolicitud" class="edesur.hurto.inspecciones.beans.ConsultaInspeccion" >
+        <property name="dataSource" ref="SynergiaDS" />
+    </bean>
+
     <bean id="cargaClienteT1" class="edesur.hurto.inspecciones.beans.ClienteDAO" >
         <property name="dataSource" ref="SynergiaDS" />
     </bean>

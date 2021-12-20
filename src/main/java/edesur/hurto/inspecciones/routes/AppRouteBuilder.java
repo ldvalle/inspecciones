@@ -13,12 +13,10 @@ public class AppRouteBuilder extends BaseRouteBuilder {
                 .choice()
                     .when(header(CxfConstants.OPERATION_NAME).isEqualTo("SolicitudInspeccion"))
                         .to("direct:setSolicitudInspeccion")
-/*                        
-                    .when(header(CxfConstants.OPERATION_NAME).isEqualTo("wsRDDNotificaAr"))
-                        .to("direct:setRddNoti")
-                    .when(header(CxfConstants.OPERATION_NAME).isEqualTo("wsRDDReversaAr"))
-                        .to("direct:setRddReversa")  
-*/                                         
+
+                    .when(header(CxfConstants.OPERATION_NAME).isEqualTo("ConsultaInspeccion"))
+                        .to("direct:setConsultaInspeccion")
+
                     .otherwise()
                         .log(LoggingLevel.ERROR, "Operacion no implementada: " + header(CxfConstants.OPERATION_NAME))
                 .end();
