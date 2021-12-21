@@ -4,6 +4,7 @@ package edesur.hurto.inspecciones.model;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -97,6 +98,8 @@ public class InspeStatusResponse {
         this.descripEstado = descripEstado;
     }
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+    @JsonProperty("fechaEstado")
     public Date getFechaEstado() {
         return fechaEstado;
     }
