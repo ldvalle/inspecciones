@@ -137,12 +137,6 @@ public class SolicitudInspeccionT23 {
                 throw new RuntimeException(ex);
             }
 
-
-
-            System.out.println("Nombre " + regCli.getNombre().trim());
-            System.out.println("Localidad " + regCli.getComuna());
-
-
         }else{
             switch (regCli.getEstado_cliente()){
                 case -1:

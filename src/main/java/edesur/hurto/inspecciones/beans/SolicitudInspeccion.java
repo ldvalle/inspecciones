@@ -252,21 +252,17 @@ public class SolicitudInspeccion {
     int     iDiasParametro=0;
     InspeSolicitudDTO regSol;
 
-        System.out.println("paso 1");
         lNroSolicitud=0;
         //Verificar que no tenga Individual Pendiente
         if(!IndivPteT1(nroCliente, connection)){
-            System.out.println("paso 2 cliente " + nroCliente);
             InspeSolicitudDTO regUltimaSol = new InspeSolicitudDTO();
             //Levantar ultima solicitud
             regUltimaSol = CargaUltimaSol(nroCliente, connection);
             lNroUltimaSol= regUltimaSol.getNro_solicitud();
-            System.out.println("paso 3");
             if(lNroUltimaSol>0) {
                 iTipoExtractor = regUltimaSol.getTipo_extractor();
                 iEstadoUltimaSol = regUltimaSol.getEstado();
                 iDiffDias = regUltimaSol.getDifDiasEntre();
-                System.out.println("paso 4");
                 //Si tiene masiva solicitada se anexa a la individual
                 if (iTipoExtractor != 6 && iEstadoUltimaSol == 1) {
                     iEstado = 2;
@@ -276,19 +272,15 @@ public class SolicitudInspeccion {
                     sComentario = "Se anexó a solicitud masiva solicitada.";
                     lNroSolicitud = lNroUltimaSol;
                 }
-                System.out.println("paso 5");
                 //Si tiene una inspe pendiente, se registra la ocurrencia
                 if (iEstadoUltimaSol != 1 && iEstadoUltimaSol != 3 && iEstadoUltimaSol != 7) {
-                    System.out.println("paso 6");
                     iEstado = iEstadoUltimaSol;
                     if (!RegistraOcurrencia(lNroUltimaSol, connection)) {
                         return false;
                     }
                     sComentario = "Se registra ocurrencia con ultima solicitud pendiente.";
                     lNroSolicitud = lNroUltimaSol;
-                    System.out.println("paso 7");
                 }
-                System.out.println("paso 8");
                 //Si tiene ultima inspe finalizada, se evalua los N dias
                 if (iEstadoUltimaSol == 7 && !(regUltimaSol.getEjecuto_inspeccion().trim().equals("N"))) {
                     iDiffDias = regUltimaSol.getDifDiasEntre();
@@ -311,9 +303,6 @@ public class SolicitudInspeccion {
                 iEstado=1;
                 sComentario="Inspeccion solicitada.";
             }
-            System.out.println("paso 9");
-
-            System.out.println("paso 10");
             //Dependiendo del estado se genera solicitud
             if(iEstado==1 || iEstado==8){
                 regSol=ArmaNvaSolicitud(nroCliente, sCodMotivo, iEstado, sComentario, regCli);
@@ -331,11 +320,9 @@ public class SolicitudInspeccion {
         }
 
         //Actualizar Caso con iEstado y sComentario
-        System.out.println("punto 11");
         if(!ActualizarCaso(lNroSolicitud, nroCliente, idCaso, iEstado, sComentario, connection)){
             return false;
         }
-        System.out.println("paso 12");
         return true;
     }
 
