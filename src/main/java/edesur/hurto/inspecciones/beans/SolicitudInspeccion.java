@@ -72,10 +72,10 @@ public class SolicitudInspeccion {
                   regCliT1  = cargaClienteT1(nroCliente);
 
                   if (RegSolicitudT1(idCaso, nroCliente, sCodMotivo, iTarifaCliente, regCliT1)) {
-                      regRes.setCodigo_retorno("1");
+                      regRes.setCodigo_retorno("OK");
                       regRes.setDescripcion_retorno("Solicitud T1 " + idCaso + " Registrada");
                   } else {
-                      regRes.setCodigo_retorno("0");
+                      regRes.setCodigo_retorno("KO");
                       regRes.setDescripcion_retorno("Solicitud T1 " + idCaso + " NO Registrada");
                   }
               }
@@ -495,7 +495,7 @@ public class SolicitudInspeccion {
         reg.setModelo_medidor(regCli.getModelo_medidor());
         reg.setNro_medidor(regCli.getNumero_medidor());
 
-        System.out.println("Cliente " + reg.getNumero_cliente());
+        //System.out.println("Cliente " + reg.getNumero_cliente());
         return reg;
     }
 

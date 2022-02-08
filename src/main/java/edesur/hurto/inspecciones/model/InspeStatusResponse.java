@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -17,8 +18,8 @@ import java.util.Date;
         "idCaso",
         "numeroCliente",
         "nroSolicitud",
-        "tarifa",
-        "codEstado",
+        //"tarifa",
+        "codEstado2",
         "descripEstado",
         "fechaEstado"
 })
@@ -30,23 +31,25 @@ public class InspeStatusResponse {
     private long idCaso;
 
     @Size(max = 999999999)
-    @NotNull
     private long numeroCliente;
+
+    private int tarifa;
 
     @Size(max = 999999999)
     private long nroSolicitud;
 
-    @NotNull
-    private int tarifa;
-
     @Size(max = 999)
-    @NotNull
-    private int codEstado;
+    private String codEstado;
+
+    private int codEstado2;
 
     @NotNull
     private String descripEstado;
 
     private Date fechaEstado;
+
+    private String sProcesado;
+
 
     /* setters & getters */
 
@@ -74,6 +77,7 @@ public class InspeStatusResponse {
         this.nroSolicitud = nroSolicitud;
     }
 
+    @JsonIgnore
     public int getTarifa() {
         return tarifa;
     }
@@ -82,13 +86,23 @@ public class InspeStatusResponse {
         this.tarifa = tarifa;
     }
 
-    public int getCodEstado() {
+    @JsonIgnore
+    public int getCodEstado2() {
+        return codEstado2;
+    }
+
+    public void setCodEstado2(int codEstado2) {
+        this.codEstado2 = codEstado2;
+    }
+
+    public String getCodEstado() {
         return codEstado;
     }
 
-    public void setCodEstado(int codEstado) {
+    public void setCodEstado(String codEstado) {
         this.codEstado = codEstado;
     }
+
 
     public String getDescripEstado() {
         return descripEstado;
@@ -108,17 +122,27 @@ public class InspeStatusResponse {
         this.fechaEstado = fechaEstado;
     }
 
+    public String getsProcesado(){
+        return sProcesado;
+    }
+
+    public void setsProcesado(String sProcesado){
+        this.sProcesado=sProcesado;
+    }
+
+
     /********/
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("InspeStatusResponse{");
-        sb.append("idCaso=").append(idCaso);
         sb.append(", numeroCliente=").append(numeroCliente);
         sb.append(", nroSolicitud=").append(nroSolicitud);
-        sb.append(", tarifa=").append(tarifa);
-        sb.append(", codEstado=").append(codEstado);
+        sb.append(", codEstado2=").append(codEstado2);
         sb.append(", descripEstado='").append(descripEstado).append('\'');
+        sb.append("idCaso=").append(idCaso);
         sb.append(", fechaEstado=").append(df.format(fechaEstado));
+        sb.append(", flagProcessed='").append(sProcesado).append('\'');
+        //sb.append(", tarifa=").append(tarifa);
         sb.append('}');
         return sb.toString();
     }

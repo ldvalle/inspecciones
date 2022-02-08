@@ -29,7 +29,8 @@ public class ConsultaInspeccion {
             //determinar si es respuesta automática
             if(regData.getIdCaso()<=0){
                 regData.setIdCaso(idCaso);
-                regData.setCodEstado(0);
+                regData.setCodEstado2(0);
+                regData.setCodEstado("KO");
                 regData.setDescripEstado("Caso Inexistente");
 
                 return regData;
@@ -63,9 +64,17 @@ public class ConsultaInspeccion {
                     reg.setNumeroCliente(rs.getLong(2));
                     reg.setNroSolicitud(rs.getLong(3));
                     reg.setTarifa(rs.getInt(4));
-                    reg.setCodEstado(rs.getInt(5));
+                    reg.setCodEstado2(rs.getInt(5));
                     reg.setDescripEstado(rs.getString(6));
                     reg.setFechaEstado(rs.getDate(7));
+
+                    if(reg.getCodEstado2()<1 || reg.getCodEstado2() > 10 || reg.getCodEstado2()==3){
+                        reg.setCodEstado("KO");
+                        reg.setsProcesado("N");
+                    }else{
+                        reg.setCodEstado("OK");
+                        reg.setsProcesado("S");
+                    }
                 }
             }
         }
@@ -80,6 +89,7 @@ public class ConsultaInspeccion {
         regFin.setIdCaso(regBase.getIdCaso());
         regFin.setNroSolicitud(regBase.getNroSolicitud());
         regFin.setNumeroCliente(regBase.getNumeroCliente());
+
         regFin.setTarifa(regBase.getTarifa());
 
         if(regFin.getTarifa()==1){
@@ -91,10 +101,18 @@ public class ConsultaInspeccion {
         try(PreparedStatement stmt = conn.prepareStatement(SQL)) {
             stmt.setLong(1, regFin.getNroSolicitud());
             try(ResultSet rs = stmt.executeQuery()) {
-                if(rs.next()){
-                    regFin.setCodEstado(rs.getInt(1));
+                if (rs.next()) {
+                    regFin.setCodEstado2(rs.getInt(1));
                     regFin.setDescripEstado(rs.getString(2));
                     regFin.setFechaEstado(rs.getDate(3));
+
+                    if (regFin.getCodEstado2() < 1 || regFin.getCodEstado2() > 10 || regFin.getCodEstado2() == 3) {
+                        regFin.setCodEstado("KO");
+                        regFin.setsProcesado("N");
+                    } else {
+                        regFin.setCodEstado("OK");
+                        regFin.setsProcesado("S");
+                    }
                 }
             }
         }

@@ -5,9 +5,11 @@ public enum ErrorType {
     ClienteNoExiste ("E400SC0001", "Cliente Inexistente"),
     ClienteNoEnEstado("E400SC0002", "Cliente Inexistente, Inactivo o en Ciclo de Facturación"),
 
-    InternalError("E500SC0000", "Error Interno"),
+    //InternalError("E500SC0000", "Error Interno"),
+    InternalError("KO", "Error Interno"),
     DeudaNoExiste("E600SC0001", "Deuda no existe"),
-    SqlError("E500SC0001", "Error SQL");
+    //SqlError("E500SC0001", "Error SQL");
+    SqlError("KO", "Error SQL");
     
 
     private String codigo_retorno;
