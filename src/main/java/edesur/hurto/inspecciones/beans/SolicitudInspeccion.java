@@ -150,6 +150,9 @@ public class SolicitudInspeccion {
     }
 
     private void RegistraRechazo(long idCaso, long nroCliente, String sCodMotivo, int tarifa,int codEstado, String descEstado)throws SQLException{
+        if(codEstado==0 && (descEstado.trim().equals("") || descEstado == null))
+            descEstado="Error Interno";
+
         try(Connection connection = dataSource.getConnection()) {
             try(PreparedStatement stmt = connection.prepareStatement(INS_RECHAZO)) {
                 stmt.setLong(1, idCaso);
@@ -167,7 +170,7 @@ public class SolicitudInspeccion {
     private Boolean RegSolicitudT1(long idCaso, long nroCliente, String sCodMotivo, int tarifa, ClienteDTO regCli) throws SQLException{
     
         try(Connection connection = dataSource.getConnection()) {
-            connection.setAutoCommit(false);
+            //connection.setAutoCommit(false);
             try(PreparedStatement stmt = connection.prepareStatement(INS_PEDIDO)) {
                 stmt.setLong(1, idCaso);
                 stmt.setLong(2, nroCliente);
@@ -180,7 +183,7 @@ public class SolicitudInspeccion {
                 if(tarifa==1){
 
                     if(!ProcesoT1(idCaso, nroCliente, sCodMotivo, regCli, connection)){
-                        connection.rollback();
+                        //connection.rollback();
                         return false;
                     }
 
@@ -188,7 +191,7 @@ public class SolicitudInspeccion {
                     // Proceso de T23
                 }
             }
-            connection.commit();
+            //connection.commit();
         }
         return true;
     }
@@ -612,7 +615,7 @@ public class SolicitudInspeccion {
             "c.nom_entre1, c.barrio, c.nom_barrio, " +
             "c.nombre, c.tip_doc, c.nro_doc, " +
             "c.telefono, c.estado_cliente, c.cod_postal, " +
-            "c.obs_dir, c.manzana, " +
+            "nvl(c.obs_dir, ' '), c.manzana, " +
             "m.numero_medidor, m.marca_medidor, m.modelo_medidor, dt.dias_insp_mismo_or " +
             "FROM cliente c, OUTER medid m, inspecc:in_sucursal sp, inspecc:in_sucur_dias_tar dt " +
             "WHERE c.numero_cliente = ? " +

@@ -31,7 +31,6 @@ public class SolicitudInspeccionT23 {
 
         InspeSolicitudResponse regRes = new InspeSolicitudResponse();
 
-        //TODO
         if(!ProcesoT23(idCaso, nroCliente, sCodMotivo)){
             regRes.setCodigo_retorno("1");
             regRes.setDescripcion_retorno("Fallo carga de caso " + idCaso);
@@ -80,7 +79,7 @@ public class SolicitudInspeccionT23 {
                     }
                     return true;
                 }
-                conectSyn.setAutoCommit(false);
+                //conectSyn.setAutoCommit(false);
                 //Levantar la ultima solicitud
                 regUltiSol=srvSol.getUltimaSolicitud(nroCliente, conectSyn);
 
@@ -117,7 +116,7 @@ public class SolicitudInspeccionT23 {
 
                     //Grabarla
                     if(! srvSol.InsertaSolicitud(regNvaSol, conectSyn)){
-                        conectSyn.rollback();
+                        //conectSyn.rollback();
                         return false;
                     }
                     //Recuperar nro.de solicitud
@@ -131,7 +130,7 @@ public class SolicitudInspeccionT23 {
                 }
 
 
-                conectSyn.commit();
+                //conectSyn.commit();
             }catch (Exception ex){
                 ex.printStackTrace();
                 throw new RuntimeException(ex);
@@ -162,6 +161,9 @@ public class SolicitudInspeccionT23 {
     }
 
     private boolean InsertaCaso(long idCaso, long nroCliente, String sCodMotivo, int tarifa, int iEstado, String sDescripcion, long nroSolicitud, Connection connection)throws  SQLException{
+
+        if(iEstado==0 && (sDescripcion.trim().equals("") || sDescripcion == null))
+            sDescripcion="Error Interno";
 
         try(PreparedStatement stmt = connection.prepareStatement(INS_PEDIDO)) {
             stmt.setLong(1, idCaso);
