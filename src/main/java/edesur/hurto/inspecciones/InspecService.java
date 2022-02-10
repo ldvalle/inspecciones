@@ -4,6 +4,7 @@ import edesur.hurto.inspecciones.model.InspeSolicitudRequest;
 import edesur.hurto.inspecciones.model.InspeSolicitudResponse;
 import edesur.hurto.inspecciones.model.InspeStatusRequest;
 import edesur.hurto.inspecciones.model.InspeStatusResponse;
+import edesur.hurto.inspecciones.model.InspeStatusRequest2;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -29,6 +30,14 @@ public class InspecService {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public InspeStatusResponse ConsultaInspeccion(@NotNull @Valid InspeStatusRequest request) {
+        return null;
+    }
+
+    @POST
+    @Path("/ConsultaInspeccion2")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public InspeStatusResponse ConsultaInspeccion2(@NotNull @Valid InspeStatusRequest2 request) {
         return null;
     }
 

@@ -51,6 +51,39 @@ public class ConsultaInspeccion {
         return regData;
     }
 
+    public InspeStatusResponse getConsultaInspecCliente(long nroSolicitud, long nroCliente){
+        InspeStatusResponse regData=null;
+
+        try {
+            Connection connection = dataSource.getConnection();
+            //Buscar el caso
+            regData = getSolicitudCliente(nroSolicitud, nroCliente, connection);
+
+            //determinar si es respuesta automática
+            if(regData.getIdCaso()<=0){
+                regData.setNroSolicitud(nroSolicitud);
+                regData.setCodEstado2(0);
+                regData.setCodEstado("KO");
+                regData.setDescripEstado("Caso Inexistente");
+
+                return regData;
+            }
+
+            if(regData.getNroSolicitud()<=0){
+                return regData;
+            }
+
+            // Recuperar el estado de la inspeccion ya registrada
+            regData = getEstSol(regData, connection);
+
+        }catch(Exception ex){
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        }
+
+        return regData;
+    }
+
     private InspeStatusResponse getSolicitud(long idCaso, long nroCliente, Connection conn)throws SQLException{
         InspeStatusResponse reg = new InspeStatusResponse();
 
@@ -58,6 +91,39 @@ public class ConsultaInspeccion {
 
         try(PreparedStatement stmt = conn.prepareStatement(SEL_SOL)) {
             stmt.setLong(1, idCaso);
+            try(ResultSet rs = stmt.executeQuery()) {
+                if(rs.next()){
+                    reg.setIdCaso(rs.getLong(1));
+                    reg.setNumeroCliente(rs.getLong(2));
+                    reg.setNroSolicitud(rs.getLong(3));
+                    reg.setTarifa(rs.getInt(4));
+                    reg.setCodEstado2(rs.getInt(5));
+                    reg.setDescripEstado(rs.getString(6));
+                    reg.setFechaEstado(rs.getDate(7));
+
+                    if(reg.getCodEstado2()<1 || reg.getCodEstado2() > 10 || reg.getCodEstado2()==3){
+                        reg.setCodEstado("KO");
+                        reg.setsProcesado("N");
+                    }else{
+                        reg.setCodEstado("OK");
+                        reg.setsProcesado("S");
+                    }
+                }
+            }
+        }
+
+        return reg;
+    }
+
+    private InspeStatusResponse getSolicitudCliente(long nroSolicitud, long nroCliente, Connection conn) throws SQLException{
+        InspeStatusResponse reg = new InspeStatusResponse();
+
+        reg.setIdCaso(-1);
+
+        try(PreparedStatement stmt = conn.prepareStatement(SEL_XSOLICITUD)) {
+            stmt.setLong(1, nroSolicitud);
+            stmt.setLong(2, nroCliente);
+
             try(ResultSet rs = stmt.executeQuery()) {
                 if(rs.next()){
                     reg.setIdCaso(rs.getLong(1));
@@ -125,6 +191,13 @@ public class ConsultaInspeccion {
             "tarifa, cod_estado, desc_estado, fecha_estado " +
             "FROM sol_inspecciones " +
             "WHERE id_caso = ? ";
+
+    private static final String SEL_XSOLICITUD = "SELECT id_caso, numero_cliente, nro_solicitud_inspeccion, " +
+            "tarifa, cod_estado, desc_estado, fecha_estado " +
+            "FROM sol_inspecciones " +
+            "WHERE nro_solicitud_inspeccion = ? " +
+            "AND numero_cliente = ? ";
+
 
     private static final String SEL_ESTADO_T1 = "SELECT e.codigo_estado, TRIM(e.descripcion), s.fecha_estado " +
             "FROM inspecc:in_solicitud s, inspecc:in_estado_solic e " +
