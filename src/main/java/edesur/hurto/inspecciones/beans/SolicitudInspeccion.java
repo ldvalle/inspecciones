@@ -308,6 +308,10 @@ public class SolicitudInspeccion {
             }
             //Dependiendo del estado se genera solicitud
             if(iEstado==1 || iEstado==8){
+                if(iEstado==1){
+                    iEstado=8;
+                    sComentario="Insp.Solicitada con Ruta Lectura Asignada";
+                }
                 regSol=ArmaNvaSolicitud(nroCliente, sCodMotivo, iEstado, sComentario, regCli);
                 if(!GrabaNvaSol(regSol, connection)){
                     return false;
