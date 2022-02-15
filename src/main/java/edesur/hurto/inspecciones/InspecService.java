@@ -5,7 +5,9 @@ import edesur.hurto.inspecciones.model.InspeSolicitudResponse;
 import edesur.hurto.inspecciones.model.InspeStatusRequest;
 import edesur.hurto.inspecciones.model.InspeStatusResponse;
 import edesur.hurto.inspecciones.model.InspeStatusRequest2;
-
+import edesur.hurto.inspecciones.model.InspeHistoRequest;
+import edesur.hurto.inspecciones.model.InspeHistoResultado;
+import edesur.hurto.inspecciones.model.InspeHistoResponse;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
@@ -38,6 +40,14 @@ public class InspecService {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public InspeStatusResponse ConsultaInspeccion2(@NotNull @Valid InspeStatusRequest2 request) {
+        return null;
+    }
+
+    @POST
+    @Path("/getWorkOrderID")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public InspeHistoResponse getWorkOrderID(@NotNull @Valid InspeHistoRequest request) {
         return null;
     }
 

@@ -37,6 +37,10 @@
         <property name="dataSource" ref="SynergiaDS" />
     </bean>
 
+    <bean id="consultarHistoInspecciones" class="edesur.hurto.inspecciones.beans.ConsultaHistoInspecciones" >
+        <property name="dataSource" ref="SynergiaDS" />
+    </bean>
+
     <bean id="cargaClienteT1" class="edesur.hurto.inspecciones.beans.ClienteDAO" >
         <property name="dataSource" ref="SynergiaDS" />
     </bean>
