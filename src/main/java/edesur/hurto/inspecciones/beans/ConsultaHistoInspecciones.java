@@ -50,10 +50,11 @@ public class ConsultaHistoInspecciones {
             try(PreparedStatement stmt = conn.prepareStatement(SQL_QUERY)) {
                 stmt.setLong(1, nroCliente);
                 try(ResultSet rs = stmt.executeQuery()) {
-                    InspeConsulta reg1 = new InspeConsulta();
-                    InspeHistoResultado reg2 = new InspeHistoResultado();
 
-                    if(rs.next()){
+                    while(rs.next()){
+                        InspeConsulta reg1 = new InspeConsulta();
+                        InspeHistoResultado reg2 = new InspeHistoResultado();
+
                         reg1.numero_cliente = rs.getLong(1);
                         reg1.tipo_extractor = rs.getInt(2);
                         reg1.cod_motivo = rs.getString(3);
