@@ -23,6 +23,8 @@ public class AppRouteBuilder extends BaseRouteBuilder {
                     .when(header(CxfConstants.OPERATION_NAME).isEqualTo("getWorkOrderID"))
                         .to("direct:setConsultaHistoInspeccion")
 
+                    .when(header(CxfConstants.OPERATION_NAME).isEqualTo("getEventWO"))
+                        .to("direct:setConsultaWOevent")
                     .otherwise()
                         .log(LoggingLevel.ERROR, "Operacion no implementada: " + header(CxfConstants.OPERATION_NAME))
                 .end();

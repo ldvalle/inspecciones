@@ -1,13 +1,7 @@
 package edesur.hurto.inspecciones;
 
-import edesur.hurto.inspecciones.model.InspeSolicitudRequest;
-import edesur.hurto.inspecciones.model.InspeSolicitudResponse;
-import edesur.hurto.inspecciones.model.InspeStatusRequest;
-import edesur.hurto.inspecciones.model.InspeStatusResponse;
-import edesur.hurto.inspecciones.model.InspeStatusRequest2;
-import edesur.hurto.inspecciones.model.InspeHistoRequest;
-import edesur.hurto.inspecciones.model.InspeHistoResultado;
-import edesur.hurto.inspecciones.model.InspeHistoResponse;
+import edesur.hurto.inspecciones.model.*;
+
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
@@ -48,6 +42,14 @@ public class InspecService {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public InspeHistoResponse getWorkOrderID(@NotNull @Valid InspeHistoRequest request) {
+        return null;
+    }
+
+    @POST
+    @Path("/getEventWO")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public ConsultaWOResponse getEventWO(@NotNull @Valid ConsultaWORequest request) {
         return null;
     }
 

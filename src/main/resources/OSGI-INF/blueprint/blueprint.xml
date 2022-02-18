@@ -41,6 +41,10 @@
         <property name="dataSource" ref="SynergiaDS" />
     </bean>
 
+    <bean id="consultarOrdenes" class="edesur.hurto.inspecciones.beans.ConsultaOrdenesTrabajo" >
+        <property name="dataSource" ref="SynergiaDS" />
+    </bean>
+
     <bean id="cargaClienteT1" class="edesur.hurto.inspecciones.beans.ClienteDAO" >
         <property name="dataSource" ref="SynergiaDS" />
     </bean>
