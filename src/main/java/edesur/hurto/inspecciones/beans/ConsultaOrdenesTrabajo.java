@@ -4,6 +4,7 @@ import edesur.hurto.inspecciones.model.ConsultaWOResultado;
 import edesur.hurto.inspecciones.model.ConsultaWOResponse;
 
 import javax.sql.DataSource;
+import javax.sql.rowset.CachedRowSet;
 import javax.xml.ws.spi.ServiceDelegate;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -100,14 +101,22 @@ public class ConsultaOrdenesTrabajo {
             ") WITH NO LOG ";
 
     private static final String INS_INSPE_T1 = "INSERT INTO tempo1 (numero_cliente, fecha_evento, tipo_evento, valor_evento) " +
-            "SELECT s.numero_cliente, DATE(i.fecha_inspeccion), 'Insp', 0 " +
+            "SELECT s.numero_cliente, DATE(i.fecha_inspeccion), 'Insp', " +
+            "CASE " +
+            "    WHEN i.tiene_anom_comerci IN (0, 3, 4, 6) AND s.estado = 7 THEN -2 " +
+            "    ELSE 0 " +
+            "END " +
             "FROM inspecc:in_solicitud s, inspecc:in_inspeccion i " +
             "WHERE s.numero_cliente = ? " +
             "AND s.estado IN (6, 7) " +
             "AND i.nro_solicitud = s.nro_solicitud ";
 
     private static final String INS_INSPE_T23 = "INSERT INTO tempo1 (numero_cliente, fecha_evento, tipo_evento, valor_evento) " +
-            "SELECT s.numero_cliente, DATE(i.fecha_inspeccion), 'Insp', 0 " +
+            "SELECT s.numero_cliente, DATE(i.fecha_inspeccion), 'Insp', " +
+            "CASE " +
+            "    WHEN i.tiene_anom_comerci IN (0, 3, 4, 6) AND s.estado = 7 THEN -2 " +
+            "    ELSE 0 " +
+            "END " +
             "FROM inspect23:i3_solicitud s, inspect23:i3_inspeccion i " +
             "WHERE s.numero_cliente = ? " +
             "AND s.estado IN (6, 7) " +
