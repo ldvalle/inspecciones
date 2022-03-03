@@ -48,9 +48,18 @@ public class ConsultaOrdenesTrabajo {
             stmt.executeUpdate();
 
             if(nroCliente > 80000000){
+                long auxNroCliente=0;
+
+                if(nroCliente > 80000000 && nroCliente < 80500000) {
+                    auxNroCliente = nroCliente - 80000000;
+                }else{
+                    auxNroCliente = nroCliente;
+                }
+
                 stmt=null;
                 stmt = conn.prepareStatement(INS_INSPE_T23);
-                stmt.setLong(1, nroCliente);
+                //stmt.setLong(1, nroCliente);
+                stmt.setLong(1, auxNroCliente);
                 stmt.executeUpdate();
             }else{
                 stmt=null;

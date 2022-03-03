@@ -102,6 +102,15 @@ public class SolicitudInspeccionT23 {
                         sDescripcion = "Se registra ocurrencia con ultima solicitud pendiente.";
                         lNroNvaSolicitud=regUltiSol.getNro_solicitud();
                     }
+                    //Si tiene ultima inspe finalizada, se evalua los N dias
+                    int iDiasConfig = TraeDiasConfig(conectSyn);
+                    if(iEstado==7 && regUltiSol.getDifDiasEntre() > iDiasConfig) {
+                        iEstado=1;
+                        sDescripcion="Inspeccion Solicitada";
+                    }else{
+                        iEstado=0;
+                        sDescripcion="No pasaron los dias configurados entre inspecciones.";
+                    }
                 }else{
                     // No tiene solicitudes anteriores
                     iEstado=1;
@@ -225,6 +234,20 @@ public class SolicitudInspeccionT23 {
         return true;
     }
 
+    private int TraeDiasConfig(Connection connection) throws SQLException {
+        int iCantDias=0;
+
+        try(PreparedStatement stmt = connection.prepareStatement(SEL_DIAS_CONFIG)) {
+            try(ResultSet rs = stmt.executeQuery()) {
+                if(rs.next()){
+                    iCantDias=rs.getInt(1);
+                }
+            }
+        }
+        return iCantDias;
+    }
+
+
     private InspeSolicitudDTO CargaNvaSolicitud(ClienteDTO regCli, InspeSolicitudDTO regUltiSol, String sMotDenuncia, int iEstado){
         InspeSolicitudDTO reg=new InspeSolicitudDTO();
         String sObservaciones="";
@@ -326,5 +349,9 @@ public class SolicitudInspeccionT23 {
             "WHERE numero_cliente = ? " +
             "AND tipo_extractor = 6 ";
 
+    private static final String SEL_DIAS_CONFIG = "SELECT b.dias_insp_mismo_or " +
+            "FROM inspect23:i3_sucursal a, inspect23:i3_sucursal b " +
+            "WHERE a.padre = b.codigo " +
+            "AND a.codigo = '0000' ";
 
 }

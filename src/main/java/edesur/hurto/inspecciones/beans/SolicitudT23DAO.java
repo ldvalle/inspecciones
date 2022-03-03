@@ -8,9 +8,17 @@ public class SolicitudT23DAO {
 
     public InspeSolicitudDTO getUltimaSolicitud(long nroCliente, Connection conn)throws SQLException{
         InspeSolicitudDTO reg = new InspeSolicitudDTO();
+        long auxNroCliente=0;
+
+        if(nroCliente > 80000000 && nroCliente < 80500000) {
+            auxNroCliente = nroCliente - 80000000;
+        }else{
+            auxNroCliente = nroCliente;
+        }
 
         try(PreparedStatement stmt = conn.prepareStatement(SEL_ULTIMA_SOL_T1)) {
-            stmt.setLong(1, nroCliente);
+            //stmt.setLong(1, nroCliente);
+            stmt.setLong(1, auxNroCliente);
             try(ResultSet rs = stmt.executeQuery()) {
                 if(rs.next()){
                     reg.setNro_solicitud(rs.getLong(1));
@@ -32,6 +40,13 @@ public class SolicitudT23DAO {
     public boolean AnexaInspeccion(Long nroCliente, String sCodMotivo, InspeSolicitudDTO regUltimaSol, int iEstado, Connection connection)throws SQLException{
         long lNroInspeccion = 0;
         Long lNroSolAnterior = regUltimaSol.getNro_solicitud();
+        long auxNroCliente=0;
+
+        if(nroCliente > 80000000 && nroCliente < 80500000) {
+            auxNroCliente = nroCliente - 80000000;
+        }else{
+            auxNroCliente = nroCliente;
+        }
 
         try(PreparedStatement stmt = connection.prepareStatement(UPD_SOL_ANEXADA)) {
             stmt.setString(1, sCodMotivo.trim());
@@ -63,6 +78,7 @@ public class SolicitudT23DAO {
             stmt.setString(1,regUltimaSol.getSucursal_rol_solic());
             stmt.setLong(2,lNroInspeccion);
             stmt.setLong(3, regUltimaSol.getNro_solicitud());
+            //stmt.setLong(4,nroCliente);
             stmt.setLong(4,nroCliente);
 
             stmt.executeUpdate();

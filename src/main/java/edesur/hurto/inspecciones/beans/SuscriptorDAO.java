@@ -12,9 +12,17 @@ public class SuscriptorDAO {
     public ClienteDTO getSuscriptor(long nroCliente, Connection connection) throws SQLException{
         ClienteDTO reg = new ClienteDTO();
         String nroDocumento="";
+        long auxNroCliente=0;
+
+        if(nroCliente > 80000000 && nroCliente < 80500000) {
+            auxNroCliente = nroCliente - 80000000;
+        }else{
+            auxNroCliente = nroCliente;
+        }
 
         try(PreparedStatement stmt = connection.prepareStatement(SEL_SUSCRIPTOR)) {
-            stmt.setLong(1, nroCliente);
+            //stmt.setLong(1, nroCliente);
+            stmt.setLong(1, auxNroCliente);
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
                     reg.setNumero_cliente(rs.getLong(1));
@@ -57,7 +65,8 @@ public class SuscriptorDAO {
         }
 
         try(PreparedStatement stmt = connection.prepareStatement(SEL_QUERELLA)) {
-            stmt.setLong(1, nroCliente);
+            //stmt.setLong(1, nroCliente);
+            stmt.setLong(1, auxNroCliente);
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
                     reg.setTieneQuerella(rs.getInt(1));
@@ -68,7 +77,8 @@ public class SuscriptorDAO {
         }
 
         try(PreparedStatement stmt = connection.prepareStatement(SEL_CNR)) {
-            stmt.setLong(1, nroCliente);
+            //stmt.setLong(1, nroCliente);
+            stmt.setLong(1, auxNroCliente);
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
                     reg.setTieneCNR(rs.getInt(1));
