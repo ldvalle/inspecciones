@@ -99,7 +99,11 @@ public class ConsultaOrdenesTrabajo {
                 stmt.executeUpdate();
             }
 
-            try(PreparedStatement stmt2 = conn.prepareStatement(SEL_CONSULTA)) {
+            SQL_QUERY = SEL_CONSULTA;
+            if(nroCliente > 80000000)
+                SQL_QUERY = SEL_CONSULTA_T23;
+
+            try(PreparedStatement stmt2 = conn.prepareStatement(SQL_QUERY)) {
                 try(ResultSet rs = stmt2.executeQuery()) {
 
                     while(rs.next()){
@@ -194,6 +198,15 @@ public class ConsultaOrdenesTrabajo {
             "    (TRIM(tipo_tdc) = 'REPO' AND codigo_accion IN ('00', '13', '15', '20', '21', '31'))) ";
 
     private static final String SEL_CONSULTA = "SELECT numero_cliente, fecha_evento, trim(tipo_evento), valor_evento " +
+            "FROM tempo1 " +
+            "ORDER BY fecha_evento DESC ";
+
+    private static final String SEL_CONSULTA_T23 = "SELECT "+
+            "CASE " +
+            "    WHEN numero_cliente < 80000000 THEN numero_cliente + 80000000 " +
+            "    ELSE numero_cliente " +
+            "END, " +
+            "fecha_evento, trim(tipo_evento), valor_evento " +
             "FROM tempo1 " +
             "ORDER BY fecha_evento DESC ";
 
