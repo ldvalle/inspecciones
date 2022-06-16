@@ -9,7 +9,9 @@ import javax.validation.constraints.Size;
 @JsonPropertyOrder({
         "idCaso",
         "numeroCliente",
-        "codMotivo"
+        "codMotivo",
+        "codCategoria",
+        "codSubCategoria"
 })
 
 public class InspeSolicitudRequest {
@@ -22,6 +24,11 @@ public class InspeSolicitudRequest {
     @NotNull
     private String codMotivo;
 
+    @NotNull
+    private String codCategoria;
+
+    @NotNull
+    private String codSubCategoria;
 
     // Setters & Getters
     public Long getIdCaso(){
@@ -38,5 +45,11 @@ public class InspeSolicitudRequest {
         return codMotivo;
     }
     public void setCodMotivo(String codMotivo ){ this.codMotivo = codMotivo; }
+
+    public String getCodCategoria() { return codCategoria; }
+    public void setCodCategoria(String codCategoria) { this.codCategoria = codCategoria; }
+
+    public String getCodSubCategoria() { return codSubCategoria; }
+    public void setCodSubCategoria(String codSubCategoria) { this.codSubCategoria = codSubCategoria; }
 
 }

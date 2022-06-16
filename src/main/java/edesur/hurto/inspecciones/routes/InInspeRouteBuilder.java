@@ -16,6 +16,8 @@ public class InInspeRouteBuilder extends BaseRouteBuilder {
                 .setHeader("idCaso", simple("${body.getIdCaso}"))
                 .setHeader("numeroCliente", simple("${body.getNumeroCliente}"))
                 .setHeader("codMotivo", simple("${body.getCodMotivo}"))
+                .setHeader("codCategoria", simple("${body.getCodCategoria}"))
+                .setHeader("codSubCategoria", simple("${body.getCodSubCategoria}"))
 
                 .log(LoggingLevel.DEBUG, logname, "Solicitud Inspeccion para cliente ${header.numero_cliente}")
                 .setHeader("response", body())
@@ -23,9 +25,9 @@ public class InInspeRouteBuilder extends BaseRouteBuilder {
 
                 .choice()
                     .when(header("numeroCliente").isLessThan(80000000))
-                            .to("bean:generarSolicitud?method=CreateSolicitud(${header.idCaso}, ${header.numeroCliente}, ${header.codMotivo})")
+                            .to("bean:generarSolicitud?method=CreateSolicitud(${header.idCaso}, ${header.numeroCliente}, ${header.codMotivo}, ${header.codCategoria}, ${header.codSubCategoria})")
                     .otherwise()
-                            .to("bean:generarSolicitudT23?method=CreateSolicitud(${header.idCaso}, ${header.numeroCliente}, ${header.codMotivo})")
+                            .to("bean:generarSolicitudT23?method=CreateSolicitud(${header.idCaso}, ${header.numeroCliente}, ${header.codMotivo}, ${header.codCategoria}, ${header.codSubCategoria})")
                 .end()
 
                 .choice()

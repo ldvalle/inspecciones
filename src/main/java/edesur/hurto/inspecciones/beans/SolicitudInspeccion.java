@@ -23,7 +23,7 @@ public class SolicitudInspeccion {
         this.dataSource = dataSource;
     }
 
-    public InspeSolicitudResponse CreateSolicitud(long idCaso, long nroCliente, String sCodMotivo){
+    public InspeSolicitudResponse CreateSolicitud(long idCaso, long nroCliente, String sCodMotivo, String sCodCategoria, String sCodSubCategoria){
         int iEstadoCliente=-1;
         int iTarifaCliente=-1;
         boolean MotivoValido=false;
@@ -71,7 +71,7 @@ public class SolicitudInspeccion {
 
                   regCliT1  = cargaClienteT1(nroCliente);
 
-                  if (RegSolicitudT1(idCaso, nroCliente, sCodMotivo, iTarifaCliente, regCliT1)) {
+                  if (RegSolicitudT1(idCaso, nroCliente, sCodMotivo, sCodCategoria, sCodSubCategoria, iTarifaCliente, regCliT1)) {
                       regRes.setCodigo_retorno("OK");
                       regRes.setDescripcion_retorno("Solicitud T1 " + idCaso + " Registrada");
                   } else {
@@ -167,7 +167,7 @@ public class SolicitudInspeccion {
         }
     }
 
-    private Boolean RegSolicitudT1(long idCaso, long nroCliente, String sCodMotivo, int tarifa, ClienteDTO regCli) throws SQLException{
+    private Boolean RegSolicitudT1(long idCaso, long nroCliente, String sCodMotivo, String codCategoria, String codSubCategoria, int tarifa, ClienteDTO regCli) throws SQLException{
     
         try(Connection connection = dataSource.getConnection()) {
             //connection.setAutoCommit(false);
@@ -175,8 +175,10 @@ public class SolicitudInspeccion {
                 stmt.setLong(1, idCaso);
                 stmt.setLong(2, nroCliente);
                 stmt.setString(3, sCodMotivo.trim());
-                stmt.setInt(4, tarifa);
-                stmt.setInt(5, 0);
+                stmt.setString(4, codCategoria.trim());
+                stmt.setString(5, codSubCategoria.trim());
+                stmt.setInt(6, tarifa);
+                stmt.setInt(7, 0);
                 
                 stmt.executeUpdate();
 
@@ -588,11 +590,13 @@ public class SolicitudInspeccion {
             "id_caso, " + 
             "numero_cliente, " +
             "cod_motivo, " +
+            "cod_categoria_gbs, " +
+            "cod_sub_categoria_gbs, " +
             "tarifa, " +
             "cod_estado, " +
             "fecha_estado " +
             ")VALUES( " +
-            "?, ?, ?, ?, ?, TODAY) ";    
+            "?, ?, ?, ?, ?, ?, ?, TODAY) ";
 
     private static final String INS_RECHAZO = "INSERT INTO sol_inspecciones ( " +
             "id_caso, " +

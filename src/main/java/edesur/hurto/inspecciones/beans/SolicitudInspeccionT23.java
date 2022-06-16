@@ -24,14 +24,14 @@ public class SolicitudInspeccionT23 {
         this.dataSourceCandela = dataSourceCandela;
     }
 
-    public InspeSolicitudResponse CreateSolicitud(long idCaso, long nroCliente, String sCodMotivo) {
+    public InspeSolicitudResponse CreateSolicitud(long idCaso, long nroCliente, String sCodMotivo, String sCodCategoria, String sCodSubCategoria) {
         int iEstadoCliente = -1;
         int iTarifaCliente = -1;
         boolean MotivoValido = false;
 
         InspeSolicitudResponse regRes = new InspeSolicitudResponse();
 
-        if(!ProcesoT23(idCaso, nroCliente, sCodMotivo)){
+        if(!ProcesoT23(idCaso, nroCliente, sCodMotivo, sCodCategoria, sCodSubCategoria)){
             regRes.setCodigo_retorno("1");
             regRes.setDescripcion_retorno("Fallo carga de caso " + idCaso);
         }
@@ -41,7 +41,7 @@ public class SolicitudInspeccionT23 {
         return regRes;
     }
 
-    private boolean ProcesoT23(long idCaso, long nroCliente, String sCodMotivo){
+    private boolean ProcesoT23(long idCaso, long nroCliente, String sCodMotivo, String sCodCategoria, String sCodSubCategoria){
         ClienteDTO regCli = new ClienteDTO();
         InspeSolicitudDTO regUltiSol = new InspeSolicitudDTO();
         InspeSolicitudDTO regNvaSol = new InspeSolicitudDTO();
@@ -65,7 +65,7 @@ public class SolicitudInspeccionT23 {
                 if(!validaMotivo(sCodMotivo, conectSyn)){
                     iEstado=12;
                     sDescripcion="Codigo de Motivo inválido.";
-                    if(!InsertaCaso(idCaso,nroCliente,sCodMotivo,regCli.getTipoTarifaT23(), iEstado, sDescripcion, 0, conectSyn)){
+                    if(!InsertaCaso(idCaso,nroCliente,sCodMotivo, sCodCategoria, sCodSubCategoria, regCli.getTipoTarifaT23(), iEstado, sDescripcion, 0, conectSyn)){
                         return false;
                     }
                     return true;
@@ -74,7 +74,7 @@ public class SolicitudInspeccionT23 {
                 if(TieneIndividualPte(nroCliente, conectSyn)){
                     iEstado=14;
                     sDescripcion="Tiene inspeccion Individual Pendiente.";
-                    if(!InsertaCaso(idCaso,nroCliente,sCodMotivo,regCli.getTipoTarifaT23(), iEstado, sDescripcion, 0, conectSyn)){
+                    if(!InsertaCaso(idCaso,nroCliente,sCodMotivo, sCodCategoria, sCodSubCategoria,regCli.getTipoTarifaT23(), iEstado, sDescripcion, 0, conectSyn)){
                         return false;
                     }
                     return true;
@@ -133,7 +133,7 @@ public class SolicitudInspeccionT23 {
                 }
 
                 //Insertar estado del caso
-                if(!InsertaCaso(idCaso,nroCliente,sCodMotivo,regCli.getTipoTarifaT23(), iEstado, sDescripcion, lNroNvaSolicitud, conectSyn)){
+                if(!InsertaCaso(idCaso,nroCliente,sCodMotivo, sCodCategoria, sCodSubCategoria,regCli.getTipoTarifaT23(), iEstado, sDescripcion, lNroNvaSolicitud, conectSyn)){
                     conectSyn.rollback();
                     return false;
                 }
@@ -157,7 +157,7 @@ public class SolicitudInspeccionT23 {
             }
 
             try(Connection conectSyn = dataSourceSynergia.getConnection()) {
-                if(!InsertaCaso(idCaso,nroCliente,sCodMotivo,regCli.getTipoTarifaT23(), iEstado, sDescripcion, 0, conectSyn)){
+                if(!InsertaCaso(idCaso,nroCliente,sCodMotivo, sCodCategoria, sCodSubCategoria,regCli.getTipoTarifaT23(), iEstado, sDescripcion, 0, conectSyn)){
                     return false;
                 }
             }catch (Exception ex){
@@ -169,7 +169,7 @@ public class SolicitudInspeccionT23 {
         return true;
     }
 
-    private boolean InsertaCaso(long idCaso, long nroCliente, String sCodMotivo, int tarifa, int iEstado, String sDescripcion, long nroSolicitud, Connection connection)throws  SQLException{
+    private boolean InsertaCaso(long idCaso, long nroCliente, String sCodMotivo, String codCategoria, String codSubCategoria, int tarifa, int iEstado, String sDescripcion, long nroSolicitud, Connection connection)throws  SQLException{
 
         if(iEstado==0 && (sDescripcion.trim().equals("") || sDescripcion == null))
             sDescripcion="Error Interno";
@@ -178,10 +178,12 @@ public class SolicitudInspeccionT23 {
             stmt.setLong(1, idCaso);
             stmt.setLong(2, nroCliente);
             stmt.setString(3, sCodMotivo.trim());
-            stmt.setInt(4, tarifa);
-            stmt.setInt(5, iEstado);
-            stmt.setString(6, sDescripcion.trim());
-            stmt.setLong(7, nroSolicitud);
+            stmt.setString(4, codCategoria.trim());
+            stmt.setString(5, codSubCategoria.trim());
+            stmt.setInt(6, tarifa);
+            stmt.setInt(7, iEstado);
+            stmt.setString(8, sDescripcion.trim());
+            stmt.setLong(9, nroSolicitud);
 
             stmt.executeUpdate();
 
@@ -325,13 +327,15 @@ public class SolicitudInspeccionT23 {
             "id_caso, " +
             "numero_cliente, " +
             "cod_motivo, " +
+            "cod_categoria_gbs, " +
+            "cod_sub_categoria_gbs, " +
             "tarifa, " +
             "cod_estado, " +
             "desc_estado, " +
             "nro_solicitud_inspeccion, " +
             "fecha_estado " +
             ")VALUES( " +
-            "?, ?, ?, ?, ?, ?, ?, TODAY) ";
+            "?, ?, ?, ?, ?, ?, ?, ?, ?, TODAY) ";
 
     private static final String SEL_VALIDA_MOTIVO="SELECT COUNT(*) FROM tabla " +
             "WHERE nomtabla = 'MOTHUR' " +
