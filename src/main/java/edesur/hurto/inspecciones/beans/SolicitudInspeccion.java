@@ -23,9 +23,10 @@ public class SolicitudInspeccion {
         this.dataSource = dataSource;
     }
 
-    public InspeSolicitudResponse CreateSolicitud(long idCaso, long nroCliente, String sCodMotivo, String sCodCategoria, String sCodSubCategoria){
+    public InspeSolicitudResponse CreateSolicitud(long idCaso, long nroCliente, String typeOfSelection){
         int iEstadoCliente=-1;
         int iTarifaCliente=-1;
+        String sCodMotivo = "D15";
         boolean MotivoValido=false;
 
         InspeSolicitudResponse regRes = new InspeSolicitudResponse();
@@ -71,7 +72,7 @@ public class SolicitudInspeccion {
 
                   regCliT1  = cargaClienteT1(nroCliente);
 
-                  if (RegSolicitudT1(idCaso, nroCliente, sCodMotivo, sCodCategoria, sCodSubCategoria, iTarifaCliente, regCliT1)) {
+                  if (RegSolicitudT1(idCaso, nroCliente, sCodMotivo, typeOfSelection, iTarifaCliente, regCliT1)) {
                       regRes.setCodigo_retorno("OK");
                       regRes.setDescripcion_retorno("Solicitud T1 " + idCaso + " Registrada");
                   } else {
@@ -167,7 +168,7 @@ public class SolicitudInspeccion {
         }
     }
 
-    private Boolean RegSolicitudT1(long idCaso, long nroCliente, String sCodMotivo, String codCategoria, String codSubCategoria, int tarifa, ClienteDTO regCli) throws SQLException{
+    private Boolean RegSolicitudT1(long idCaso, long nroCliente, String sCodMotivo, String typeOfSelection, int tarifa, ClienteDTO regCli) throws SQLException{
     
         try(Connection connection = dataSource.getConnection()) {
             //connection.setAutoCommit(false);
@@ -175,16 +176,15 @@ public class SolicitudInspeccion {
                 stmt.setLong(1, idCaso);
                 stmt.setLong(2, nroCliente);
                 stmt.setString(3, sCodMotivo.trim());
-                stmt.setString(4, codCategoria.trim());
-                stmt.setString(5, codSubCategoria.trim());
-                stmt.setInt(6, tarifa);
-                stmt.setInt(7, 0);
+                stmt.setString(4, typeOfSelection.trim());
+                stmt.setInt(5, tarifa);
+                stmt.setInt(6, 0);
                 
                 stmt.executeUpdate();
 
                 if(tarifa==1){
 
-                    if(!ProcesoT1(idCaso, nroCliente, sCodMotivo, regCli, connection)){
+                    if(!ProcesoT1(idCaso, nroCliente, sCodMotivo, typeOfSelection, regCli, connection)){
                         //connection.rollback();
                         return false;
                     }
@@ -246,7 +246,7 @@ public class SolicitudInspeccion {
         return reg;
     }
 
-    private boolean ProcesoT1(long idCaso, long nroCliente, String sCodMotivo, ClienteDTO regCli, Connection connection) throws SQLException{
+    private boolean ProcesoT1(long idCaso, long nroCliente, String sCodMotivo, String typeOfSelection, ClienteDTO regCli, Connection connection) throws SQLException{
     int     iEstado=0;
     String  sComentario="";
     Long    lNroUltimaSol;
@@ -271,7 +271,7 @@ public class SolicitudInspeccion {
                 //Si tiene masiva solicitada se anexa a la individual
                 if (iTipoExtractor != 6 && iEstadoUltimaSol == 1) {
                     iEstado = 2;
-                    if (!AnexaInspeccion(nroCliente, sCodMotivo, regUltimaSol, iEstado, connection)) {
+                    if (!AnexaInspeccion(nroCliente, sCodMotivo, typeOfSelection, regUltimaSol, iEstado, connection)) {
                         return false;
                     }
                     sComentario = "Se anexó a solicitud masiva solicitada.";
@@ -280,7 +280,7 @@ public class SolicitudInspeccion {
                 //Si tiene una inspe pendiente, se registra la ocurrencia
                 if (iEstadoUltimaSol != 1 && iEstadoUltimaSol != 3 && iEstadoUltimaSol != 7) {
                     iEstado = iEstadoUltimaSol;
-                    if (!RegistraOcurrencia(lNroUltimaSol, connection)) {
+                    if (!RegistraOcurrencia(typeOfSelection, lNroUltimaSol, connection)) {
                         return false;
                     }
                     sComentario = "Se registra ocurrencia con ultima solicitud pendiente.";
@@ -315,7 +315,7 @@ public class SolicitudInspeccion {
                     sComentario="Insp.Solicitada con Ruta Lectura Asignada";
                 }
                 regSol=ArmaNvaSolicitud(nroCliente, sCodMotivo, iEstado, sComentario, regCli);
-                if(!GrabaNvaSol(regSol, connection)){
+                if(!GrabaNvaSol(regSol, typeOfSelection, connection)){
                     return false;
                 }
                 // Lee la ultima solicitud para completar el nro.Sol
@@ -378,11 +378,21 @@ public class SolicitudInspeccion {
         return reg;
     }
 
-    private boolean AnexaInspeccion(Long nroCliente, String sCodMotivo, InspeSolicitudDTO regUltimaSol, int iEstado, Connection connection)throws SQLException{
+    private boolean AnexaInspeccion(Long nroCliente, String sCodMotivo, String typeOfSelection, InspeSolicitudDTO regUltimaSol, int iEstado, Connection connection)throws SQLException{
         long lNroInspeccion = 0;
+        int iTipoExtractor;
+        String sql="";
         Long lNroSolAnterior = regUltimaSol.getNro_solicitud();
 
-        try(PreparedStatement stmt = connection.prepareStatement(UPD_SOL_ANEXADA)) {
+        if(typeOfSelection.trim().equals("Ty3ND")){
+            iTipoExtractor=6;
+            sql = UPD_SOL_ANEXADA_IND;
+        }else{
+            iTipoExtractor=5;
+            sql = UPD_SOL_ANEXADA_GRP;
+        }
+
+        try(PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, sCodMotivo.trim());
             stmt.setInt(2, iEstado);
             stmt.setLong(3, lNroSolAnterior);
@@ -420,8 +430,16 @@ public class SolicitudInspeccion {
         return true;
     }
 
-    private boolean RegistraOcurrencia(Long nroSolicitud, Connection connection)throws  SQLException{
-        try(PreparedStatement stmt = connection.prepareStatement(UPD_SOL_OCURRENCIA)) {
+    private boolean RegistraOcurrencia(String typeOfSelection, Long nroSolicitud, Connection connection)throws  SQLException{
+        String sql="";
+
+        if(typeOfSelection.trim().equals("Ty3ND")){
+            sql = UPD_SOL_OCURRENCIA_IND;
+        }else{
+            sql = UPD_SOL_OCURRENCIA_GRP;
+        }
+
+        try(PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setLong(1, nroSolicitud);
 
             stmt.executeUpdate();
@@ -508,8 +526,19 @@ public class SolicitudInspeccion {
         return reg;
     }
 
-    private boolean GrabaNvaSol(InspeSolicitudDTO reg, Connection connection )throws SQLException{
+    private boolean GrabaNvaSol(InspeSolicitudDTO reg, String typeOfSelection, Connection connection )throws SQLException{
     String sLinea="";
+    int iTipoExtractor;
+    String esIndividual="";
+    String esGrupo="";
+
+        if(typeOfSelection.trim().equals("Ty3ND")){
+            iTipoExtractor=6;
+            esIndividual="S";
+        }else{
+            iTipoExtractor=5;
+            esGrupo="S";
+        }
 
         try(PreparedStatement stmt = connection.prepareStatement(INS_SOLICITUD)) {
             stmt.setInt(1, reg.getEstado());
@@ -549,6 +578,9 @@ public class SolicitudInspeccion {
             stmt.setString(35, reg.getMarca_medidor());
             stmt.setString(36, reg.getModelo_medidor());
             stmt.setLong(37, reg.getNro_medidor());
+            stmt.setInt(38, iTipoExtractor);
+            stmt.setString(39, esIndividual.trim());
+            stmt.setString(40, esGrupo.trim());
 
             stmt.executeUpdate();
         }
@@ -590,8 +622,7 @@ public class SolicitudInspeccion {
             "id_caso, " + 
             "numero_cliente, " +
             "cod_motivo, " +
-            "cod_categoria_gbs, " +
-            "cod_sub_categoria_gbs, " +
+            "type_of_selection, " +
             "tarifa, " +
             "cod_estado, " +
             "fecha_estado " +
@@ -645,9 +676,18 @@ public class SolicitudInspeccion {
             "AND i.nro_solicitud = s1.nro_solicitud ";
 
 
-    private static final String UPD_SOL_ANEXADA = "UPDATE inspecc:in_solicitud SET " +
+    private static final String UPD_SOL_ANEXADA_IND = "UPDATE inspecc:in_solicitud SET " +
             "es_individual = 'S', " +
             "tipo_extractor = 6, " +
+            "mot_denuncia = ?, " +
+            "observacion2 = nvl(observacion2, '-') || '-Anexada por ws Global', " +
+            "estado = ?, " +
+            "fecha_estado = TODAY " +
+            "WHERE nro_solicitud = ? ";
+
+    private static final String UPD_SOL_ANEXADA_GRP = "UPDATE inspecc:in_solicitud SET " +
+            "es_grupo = 'S', " +
+            "tipo_extractor = 5, " +
             "mot_denuncia = ?, " +
             "observacion2 = nvl(observacion2, '-') || '-Anexada por ws Global', " +
             "estado = ?, " +
@@ -668,8 +708,13 @@ public class SolicitudInspeccion {
             "WHERE codigo = 'INSPEC' " +
             "AND  sucursal = ? ";
 
-    private static final String UPD_SOL_OCURRENCIA = "UPDATE inspecc:in_solicitud SET " +
+    private static final String UPD_SOL_OCURRENCIA_IND = "UPDATE inspecc:in_solicitud SET " +
             "es_individual = 'S', " +
+            "observacion2 = nvl(observacion2, '-') || '-se registro ocurrencia por ws Global' " +
+            "WHERE nro_solicitud = ? ";
+
+    private static final String UPD_SOL_OCURRENCIA_GRP = "UPDATE inspecc:in_solicitud SET " +
+            "es_grupo = 'S', " +
             "observacion2 = nvl(observacion2, '-') || '-se registro ocurrencia por ws Global' " +
             "WHERE nro_solicitud = ? ";
 
@@ -685,7 +730,7 @@ public class SolicitudInspeccion {
             "WHERE numero_cliente = ? " +
             "AND cod_estado <> '99' ";
 
-    private static final String INS_SOLICITUD = "INSERT INTO inspecc:in_solicitud ( tipo_extractor, es_individual, " +
+    private static final String INS_SOLICITUD = "INSERT INTO inspecc:in_solicitud (  " +
             "estado, fecha_estado, fecha_solicitud, numero_cliente, " +
             "sucursal, plan, radio, correlativo_ruta, " +
             "rol_solicitud, sucursal_rol_solic, " +
@@ -697,11 +742,11 @@ public class SolicitudInspeccion {
             "dir_cod_barrio, dir_nom_barrio, dir_manzana, " +
             "nombre, tip_doc, nro_doc, telefono, mot_denuncia, " +
             "observacion1, " +
-            "marca_medidor, modelo_medidor, nro_medidor )  " +
-            "VALUES ( 6, 'S', ? , today, today, ?, " +
+            "marca_medidor, modelo_medidor, nro_medidor, tipo_extractor, es_individual, es_grupo )  " +
+            "VALUES ( ? , today, today, ?, " +
             "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, " +
             "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, " +
-            "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ";
+            "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ";
 
     private static final String SEL_NVA_SOLICITUD = "SELECT s1.nro_solicitud FROM inspecc:in_solicitud s1 " +
             "WHERE s1.numero_cliente = ? " +

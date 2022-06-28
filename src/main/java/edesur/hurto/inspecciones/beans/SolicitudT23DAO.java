@@ -37,10 +37,11 @@ public class SolicitudT23DAO {
         return reg;
     }
 
-    public boolean AnexaInspeccion(Long nroCliente, String sCodMotivo, InspeSolicitudDTO regUltimaSol, int iEstado, Connection connection)throws SQLException{
+    public boolean AnexaInspeccion(Long nroCliente, String sCodMotivo, String typeOfSelection, InspeSolicitudDTO regUltimaSol, int iEstado, Connection connection)throws SQLException{
         long lNroInspeccion = 0;
         Long lNroSolAnterior = regUltimaSol.getNro_solicitud();
         long auxNroCliente=0;
+        String sql="";
 
         if(nroCliente > 80000000 && nroCliente < 80500000) {
             auxNroCliente = nroCliente - 80000000;
@@ -48,7 +49,13 @@ public class SolicitudT23DAO {
             auxNroCliente = nroCliente;
         }
 
-        try(PreparedStatement stmt = connection.prepareStatement(UPD_SOL_ANEXADA)) {
+        if(typeOfSelection.trim().equals("Ty3ND")){
+            sql = UPD_SOL_ANEXADA_IND;
+        }else{
+            sql = UPD_SOL_ANEXADA_GRP;
+        }
+
+        try(PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, sCodMotivo.trim());
             stmt.setInt(2, iEstado);
             stmt.setLong(3, lNroSolAnterior);
@@ -87,8 +94,16 @@ public class SolicitudT23DAO {
         return true;
     }
 
-    public boolean RegistraOcurrencia(Long nroSolicitud, Connection connection)throws  SQLException{
-        try(PreparedStatement stmt = connection.prepareStatement(UPD_SOL_OCURRENCIA)) {
+    public boolean RegistraOcurrencia(Long nroSolicitud, String typeOfSelection, Connection connection)throws  SQLException{
+        String sql="";
+
+        if(typeOfSelection.trim().equals("Ty3ND")){
+            sql = UPD_SOL_OCURRENCIA_IND;
+        }else{
+            sql = UPD_SOL_OCURRENCIA_GRP;
+        }
+
+        try(PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setLong(1, nroSolicitud);
 
             stmt.executeUpdate();
@@ -114,9 +129,20 @@ public class SolicitudT23DAO {
     }
 
 
-    public boolean InsertaSolicitud(InspeSolicitudDTO reg, Connection connection)throws  SQLException{
+    public boolean InsertaSolicitud(InspeSolicitudDTO reg, String typeOfSelection, Connection connection)throws  SQLException{
         String sTipoTarifa = Integer.toString(reg.getTipoTarifaT23());
         String sAux="";
+        int iTipoExtractor;
+        String esIndividual="";
+        String esGrupo="";
+
+        if(typeOfSelection.trim().equals("Ty3ND")){
+            iTipoExtractor=6;
+            esIndividual="S";
+        }else{
+            iTipoExtractor=5;
+            esGrupo="S";
+        }
 
         try(PreparedStatement stmt = connection.prepareStatement(INS_SOLICITUD)) {
             stmt.setInt(1, reg.getEstado());
@@ -176,6 +202,9 @@ public class SolicitudT23DAO {
 
             stmt.setInt(36, reg.getTipoTarifaT23());
             stmt.setString(37, reg.getSucursalClienteT23().trim());
+            stmt.setInt(38, iTipoExtractor);
+            stmt.setString(39, esIndividual.trim());
+            stmt.setString(40, esGrupo.trim());
 
             stmt.executeUpdate();
         }
@@ -192,9 +221,18 @@ public class SolicitudT23DAO {
             "   WHERE s2.numero_cliente = s1.numero_cliente) " +
             "AND i.nro_solicitud = s1.nro_solicitud ";
 
-    private static final String UPD_SOL_ANEXADA = "UPDATE inspect23:i3_solicitud SET " +
+    private static final String UPD_SOL_ANEXADA_IND = "UPDATE inspect23:i3_solicitud SET " +
             "es_individual = 'S', " +
             "tipo_extractor = 6, " +
+            "mot_denuncia = ?, " +
+            "observacion2 = nvl(observacion2, '-') || '-Anexada por ws Global', " +
+            "estado = ?, " +
+            "fecha_estado = TODAY " +
+            "WHERE nro_solicitud = ? ";
+
+    private static final String UPD_SOL_ANEXADA_GRP = "UPDATE inspect23:i3_solicitud SET " +
+            "es_grupe = 'S', " +
+            "tipo_extractor = 5, " +
             "mot_denuncia = ?, " +
             "observacion2 = nvl(observacion2, '-') || '-Anexada por ws Global', " +
             "estado = ?, " +
@@ -215,14 +253,19 @@ public class SolicitudT23DAO {
             "WHERE codigo = 'INST23' " +
             "AND  sucursal = ? ";
 
-    private static final String UPD_SOL_OCURRENCIA = "UPDATE inspect23:i3_solicitud SET " +
+    private static final String UPD_SOL_OCURRENCIA_IND = "UPDATE inspect23:i3_solicitud SET " +
             "es_individual = 'S', " +
+            "observacion2 = nvl(observacion2, '-') || '-se registro ocurrencia por ws Global' " +
+            "WHERE nro_solicitud = ? ";
+
+    private static final String UPD_SOL_OCURRENCIA_GRP = "UPDATE inspect23:i3_solicitud SET " +
+            "es_grupo = 'S', " +
             "observacion2 = nvl(observacion2, '-') || '-se registro ocurrencia por ws Global' " +
             "WHERE nro_solicitud = ? ";
 
     private static final String EXEC_SUCURSAL_PADRE = "{call inspect23:sucursal_padre(?, ?) } ";
 
-    private static final String INS_SOLICITUD = "INSERT INTO inspect23:i3_solicitud ( tipo_extractor, es_individual, " +
+    private static final String INS_SOLICITUD = "INSERT INTO inspect23:i3_solicitud ( " +
             "estado, fecha_estado, fecha_solicitud, numero_cliente, " +
             "sucursal, plan, radio, correlativo_ruta, " +
             "rol_solicitud, sucursal_rol_solic, " +
@@ -234,9 +277,9 @@ public class SolicitudT23DAO {
             "dir_cod_barrio, dir_nom_barrio, dir_manzana, " +
             "nro_ult_inspec, " +
             "nombre, tipo_doc, nro_doc, telefono, mot_denuncia, " +
-            "observacion1 , tarifa, sucursal_cliente " +
+            "observacion1 , tarifa, sucursal_cliente, tipo_extractor, es_individual, es_grupo " +
             ")VALUES( " +
-            "6, 'S', ?, TODAY, TODAY, ?, " +
+            "?, TODAY, TODAY, ?, " +
             "?, ?, " +
             "?, ?, ?, ?, " +
             "?, ?, ?,  " +
@@ -247,6 +290,6 @@ public class SolicitudT23DAO {
             "?, ?, ?,  " +
             "?, " +
             "?, ?, ?, ?, ?, " +
-            "?, ?, ? ) ";
+            "?, ?, ?, ?, ?, ? ) ";
 
 }
