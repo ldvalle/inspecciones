@@ -627,7 +627,7 @@ public class SolicitudInspeccion {
             "cod_estado, " +
             "fecha_estado " +
             ")VALUES( " +
-            "?, ?, ?, ?, ?, ?, ?, TODAY) ";
+            "?, ?, ?, ?, ?, ?, TODAY) ";
 
     private static final String INS_RECHAZO = "INSERT INTO sol_inspecciones ( " +
             "id_caso, " +

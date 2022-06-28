@@ -334,7 +334,7 @@ public class SolicitudInspeccionT23 {
             "nro_solicitud_inspeccion, " +
             "fecha_estado " +
             ")VALUES( " +
-            "?, ?, ?, ?, ?, ?, ?, ?, ?, TODAY) ";
+            "?, ?, ?, ?, ?, ?, ?, ?, TODAY) ";
 
     private static final String SEL_VALIDA_MOTIVO="SELECT COUNT(*) FROM tabla " +
             "WHERE nomtabla = 'MOTHUR' " +
@@ -350,7 +350,7 @@ public class SolicitudInspeccionT23 {
 
     private static final String SEL_NVA_SOLICITUD = "SELECT MAX(nro_solicitud) FROM inspect23:i3_solicitud " +
             "WHERE numero_cliente = ? " +
-            "AND tipo_extractor = 6 ";
+            "AND mot_denuncia = 'T21' ";
 
     private static final String SEL_DIAS_CONFIG = "SELECT b.dias_insp_mismo_or " +
             "FROM inspect23:i3_sucursal a, inspect23:i3_sucursal b " +
