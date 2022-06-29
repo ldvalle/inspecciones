@@ -325,7 +325,7 @@ public class SolicitudInspeccion {
 
         }else{
             iEstado=14;
-            sComentario="Ya tiene Inspección Individual Pendiente.";
+            sComentario="Ya tiene Inspección Pendiente de Carga.";
         }
 
         //Actualizar Caso con iEstado y sComentario
@@ -643,7 +643,7 @@ public class SolicitudInspeccion {
     private static final String SEL_INDIV_SOL = "SELECT COUNT(*) FROM inspecc:in_solicitud " +
             "WHERE numero_cliente = ? " +
             "AND estado NOT IN (3, 7) " +
-            "AND tipo_extractor = 6 ";
+            "AND tipo_extractor IN (5, 6) ";
 
     private static final String SEL_CLIENTE_T1 = "SELECT c.sucursal, c.sector, c.zona, " +
             "c.correlativo_ruta, c.provincia, c.nom_provincia, " +

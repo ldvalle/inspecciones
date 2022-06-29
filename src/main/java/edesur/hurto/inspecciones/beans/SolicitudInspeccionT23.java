@@ -74,7 +74,7 @@ public class SolicitudInspeccionT23 {
                 //Verifica no tener individual pendiente
                 if(TieneIndividualPte(nroCliente, conectSyn)){
                     iEstado=14;
-                    sDescripcion="Tiene inspeccion Individual Pendiente.";
+                    sDescripcion="Tiene inspeccion Pendiente de Carga.";
                     if(!InsertaCaso(idCaso,nroCliente,sCodMotivo, typeOfSelection,regCli.getTipoTarifaT23(), iEstado, sDescripcion, 0, conectSyn)){
                         return false;
                     }
@@ -346,7 +346,7 @@ public class SolicitudInspeccionT23 {
     private static final String SEL_INDIV_SOL = "SELECT COUNT(*) FROM inspect23:i3_solicitud " +
             "WHERE numero_cliente = ? " +
             "AND estado NOT IN (3, 7) " +
-            "AND tipo_extractor = 6 ";
+            "AND tipo_extractor IN (5, 6) ";
 
     private static final String SEL_NVA_SOLICITUD = "SELECT MAX(nro_solicitud) FROM inspect23:i3_solicitud " +
             "WHERE numero_cliente = ? " +
