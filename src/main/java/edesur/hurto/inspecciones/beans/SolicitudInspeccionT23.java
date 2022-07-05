@@ -24,7 +24,7 @@ public class SolicitudInspeccionT23 {
         this.dataSourceCandela = dataSourceCandela;
     }
 
-    public InspeSolicitudResponse CreateSolicitud(long idCaso, long nroCliente, String typeOfSelection) {
+    public InspeSolicitudResponse CreateSolicitud(String idCaso, long nroCliente, String typeOfSelection) {
         int iEstadoCliente = -1;
         int iTarifaCliente = -1;
         String sCodMotivo = "T21";
@@ -42,7 +42,7 @@ public class SolicitudInspeccionT23 {
         return regRes;
     }
 
-    private boolean ProcesoT23(long idCaso, long nroCliente, String sCodMotivo, String typeOfSelection){
+    private boolean ProcesoT23(String idCaso, long nroCliente, String sCodMotivo, String typeOfSelection){
         ClienteDTO regCli = new ClienteDTO();
         InspeSolicitudDTO regUltiSol = new InspeSolicitudDTO();
         InspeSolicitudDTO regNvaSol = new InspeSolicitudDTO();
@@ -170,13 +170,13 @@ public class SolicitudInspeccionT23 {
         return true;
     }
 
-    private boolean InsertaCaso(long idCaso, long nroCliente, String sCodMotivo, String typeOfSelection, int tarifa, int iEstado, String sDescripcion, long nroSolicitud, Connection connection)throws  SQLException{
+    private boolean InsertaCaso(String idCaso, long nroCliente, String sCodMotivo, String typeOfSelection, int tarifa, int iEstado, String sDescripcion, long nroSolicitud, Connection connection)throws  SQLException{
 
         if(iEstado==0 && (sDescripcion.trim().equals("") || sDescripcion == null))
             sDescripcion="Error Interno";
 
         try(PreparedStatement stmt = connection.prepareStatement(INS_PEDIDO)) {
-            stmt.setLong(1, idCaso);
+            stmt.setString(1, idCaso);
             stmt.setLong(2, nroCliente);
             stmt.setString(3, sCodMotivo.trim());
             stmt.setString(4, typeOfSelection.trim());

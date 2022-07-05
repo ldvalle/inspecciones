@@ -244,9 +244,7 @@ public class ClienteDTO {
         this.nro_doc = nro_doc;
     }
 
-    public String getTelefono() {
-        return telefono;
-    }
+    public String getTelefono() { return telefono; }
 
     public void setTelefono(String telefono) {
         this.telefono = telefono;

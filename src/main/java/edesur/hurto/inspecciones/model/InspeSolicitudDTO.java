@@ -438,9 +438,7 @@ public class InspeSolicitudDTO {
         return nro_doc;
     }
 
-    public String getTelefono() {
-        return telefono;
-    }
+    public String getTelefono() { return telefono; }
 
     public String getMot_denuncia() {
         return mot_denuncia;

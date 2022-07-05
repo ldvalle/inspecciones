@@ -6,10 +6,7 @@ import edesur.hurto.inspecciones.model.ClienteDTO;
 import edesur.hurto.inspecciones.model.InspeSolicitudDTO;
 
 import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 
 import java.util.Collection;
 import java.util.Date;
@@ -23,7 +20,7 @@ public class SolicitudInspeccion {
         this.dataSource = dataSource;
     }
 
-    public InspeSolicitudResponse CreateSolicitud(long idCaso, long nroCliente, String typeOfSelection){
+    public InspeSolicitudResponse CreateSolicitud(String idCaso, long nroCliente, String typeOfSelection){
         int iEstadoCliente=-1;
         int iTarifaCliente=-1;
         String sCodMotivo = "D15";
@@ -150,13 +147,13 @@ public class SolicitudInspeccion {
         return iSubTarifa;
     }
 
-    private void RegistraRechazo(long idCaso, long nroCliente, String sCodMotivo, int tarifa,int codEstado, String descEstado)throws SQLException{
+    private void RegistraRechazo(String idCaso, long nroCliente, String sCodMotivo, int tarifa,int codEstado, String descEstado)throws SQLException{
         if(codEstado==0 && (descEstado.trim().equals("") || descEstado == null))
             descEstado="Error Interno";
 
         try(Connection connection = dataSource.getConnection()) {
             try(PreparedStatement stmt = connection.prepareStatement(INS_RECHAZO)) {
-                stmt.setLong(1, idCaso);
+                stmt.setString(1, idCaso);
                 stmt.setLong(2, nroCliente);
                 stmt.setString(3, sCodMotivo.trim());
                 stmt.setInt(4, tarifa);
@@ -168,12 +165,12 @@ public class SolicitudInspeccion {
         }
     }
 
-    private Boolean RegSolicitudT1(long idCaso, long nroCliente, String sCodMotivo, String typeOfSelection, int tarifa, ClienteDTO regCli) throws SQLException{
+    private Boolean RegSolicitudT1(String idCaso, long nroCliente, String sCodMotivo, String typeOfSelection, int tarifa, ClienteDTO regCli) throws SQLException{
     
         try(Connection connection = dataSource.getConnection()) {
             //connection.setAutoCommit(false);
             try(PreparedStatement stmt = connection.prepareStatement(INS_PEDIDO)) {
-                stmt.setLong(1, idCaso);
+                stmt.setString(1, idCaso);
                 stmt.setLong(2, nroCliente);
                 stmt.setString(3, sCodMotivo.trim());
                 stmt.setString(4, typeOfSelection.trim());
@@ -246,7 +243,7 @@ public class SolicitudInspeccion {
         return reg;
     }
 
-    private boolean ProcesoT1(long idCaso, long nroCliente, String sCodMotivo, String typeOfSelection, ClienteDTO regCli, Connection connection) throws SQLException{
+    private boolean ProcesoT1(String idCaso, long nroCliente, String sCodMotivo, String typeOfSelection, ClienteDTO regCli, Connection connection) throws SQLException{
     int     iEstado=0;
     String  sComentario="";
     Long    lNroUltimaSol;
@@ -448,13 +445,13 @@ public class SolicitudInspeccion {
         return true;
     }
 
-    private boolean ActualizarCaso(long lNroSolicitud,long lNroCliente, Long idCaso, int iEstado, String sComentario, Connection connection)throws SQLException{
+    private boolean ActualizarCaso(long lNroSolicitud,long lNroCliente, String idCaso, int iEstado, String sComentario, Connection connection)throws SQLException{
 
         try(PreparedStatement stmt = connection.prepareStatement(UPD_CASO)) {
             stmt.setLong(1, lNroSolicitud);
             stmt.setInt(2, iEstado);
             stmt.setString(3, sComentario.trim());
-            stmt.setLong(4,idCaso);
+            stmt.setString(4,idCaso);
             stmt.setLong(5, lNroCliente);
             stmt.executeUpdate();
         }
@@ -571,7 +568,8 @@ public class SolicitudInspeccion {
             stmt.setString(28, reg.getDir_manzana().trim());
             stmt.setString(29, reg.getNombre().trim());
             stmt.setString(30, reg.getTip_doc());
-            stmt.setFloat(31, reg.getNro_doc());
+            //stmt.setFloat(31, reg.getNro_doc());
+            stmt.setObject(31, reg.getNro_doc(), Types.FLOAT);
             stmt.setString(32, reg.getTelefono().trim());
             stmt.setString(33, reg.getMot_denuncia());
             stmt.setString(34, reg.getObservacion1().trim());
@@ -653,7 +651,7 @@ public class SolicitudInspeccion {
             "c.cod_entre, c.nom_entre, c.cod_entre1, " +
             "c.nom_entre1, c.barrio, c.nom_barrio, " +
             "c.nombre, c.tip_doc, c.nro_doc, " +
-            "c.telefono, c.estado_cliente, c.cod_postal, " +
+            "nvl(c.telefono, ' '), c.estado_cliente, c.cod_postal, " +
             "nvl(c.obs_dir, ' '), c.manzana, " +
             "m.numero_medidor, m.marca_medidor, m.modelo_medidor, dt.dias_insp_mismo_or " +
             "FROM cliente c, OUTER medid m, inspecc:in_sucursal sp, inspecc:in_sucur_dias_tar dt " +

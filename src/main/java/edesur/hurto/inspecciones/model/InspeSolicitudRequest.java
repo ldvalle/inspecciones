@@ -14,7 +14,7 @@ import javax.validation.constraints.Size;
 
 public class InspeSolicitudRequest {
     @NotNull
-    private Long idCaso;
+    private String idCaso;
 
     @NotNull
     private Long numeroCliente;
@@ -23,10 +23,10 @@ public class InspeSolicitudRequest {
     private String typeOfSelection;
 
     // Setters & Getters
-    public Long getIdCaso(){
+    public String getIdCaso(){
         return idCaso;
     }
-    public void setIdCaso(Long idCaso ){ this.idCaso = idCaso; }
+    public void setIdCaso(String idCaso ){ this.idCaso = idCaso; }
 
     public Long getNumeroCliente(){
         return numeroCliente;
