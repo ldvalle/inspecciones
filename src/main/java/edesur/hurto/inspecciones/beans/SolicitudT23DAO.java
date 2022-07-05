@@ -231,7 +231,7 @@ public class SolicitudT23DAO {
             "WHERE nro_solicitud = ? ";
 
     private static final String UPD_SOL_ANEXADA_GRP = "UPDATE inspect23:i3_solicitud SET " +
-            "es_grupe = 'S', " +
+            "es_grupo = 'S', " +
             "tipo_extractor = 5, " +
             "mot_denuncia = ?, " +
             "observacion2 = nvl(observacion2, '-') || '-Anexada por ws Global', " +
