@@ -111,6 +111,7 @@ public class SolicitudInspeccionT23 {
                     }else{
                         iEstado=0;
                         sDescripcion="No pasaron los dias configurados entre inspecciones.";
+                        lNroNvaSolicitud=0;
                     }
                 }else{
                     // No tiene solicitudes anteriores

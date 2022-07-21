@@ -244,7 +244,7 @@ public class SolicitudInspeccion {
     }
 
     private boolean ProcesoT1(String idCaso, long nroCliente, String sCodMotivo, String typeOfSelection, ClienteDTO regCli, Connection connection) throws SQLException{
-    int     iEstado=0;
+    int     iEstado=99;
     String  sComentario="";
     Long    lNroUltimaSol;
     long    lNroSolicitud;
@@ -289,8 +289,9 @@ public class SolicitudInspeccion {
                     iDiasParametro = regCli.getnDiasConfig();
 
                     if (iDiffDias < iDiasParametro) {
-                        iEstado = 8;
+                        iEstado = 0;
                         sComentario = "No pasaron los " + iDiasParametro + " entre inspecciones.";
+                        lNroSolicitud=0;
                     } else {
                         iEstado = 1;
                     }
@@ -298,12 +299,14 @@ public class SolicitudInspeccion {
             }
 
             // si tiene CNR pasarlo a estado 8 sinó queda en estado 1
-            if(TieneCNR(nroCliente, connection)){
-                iEstado=8;
-                sComentario="Insp.solicitada pendiente por CNR vigente.";
-            }else{
-                iEstado=1;
-                sComentario="Inspeccion solicitada.";
+            if(iEstado != 0) {
+                if (TieneCNR(nroCliente, connection)) {
+                    iEstado = 8;
+                    sComentario = "Insp.solicitada pendiente por CNR vigente.";
+                } else {
+                    iEstado = 1;
+                    sComentario = "Inspeccion solicitada.";
+                }
             }
             //Dependiendo del estado se genera solicitud
             if(iEstado==1 || iEstado==8){
