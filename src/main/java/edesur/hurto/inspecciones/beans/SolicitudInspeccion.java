@@ -53,14 +53,14 @@ public class SolicitudInspeccion {
               }
 
               if (iEstadoCliente < 0){
-                  RegistraRechazo(idCaso, nroCliente, sCodMotivo, iTarifaCliente,11, "Cliente No Existe");
+                  RegistraRechazo(idCaso, nroCliente, sCodMotivo, iTarifaCliente,11, "Cliente No Existe", typeOfSelection);
                   return regRes;
               }
 
               if(!validaMotivo(sCodMotivo)){
                   regRes.setCodigo_retorno("12");
                   regRes.setDescripcion_retorno("Codigo de Motivo Invalido ");
-                  RegistraRechazo(idCaso, nroCliente, sCodMotivo, iTarifaCliente,12, "Motivo Invalido");
+                  RegistraRechazo(idCaso, nroCliente, sCodMotivo, iTarifaCliente,12, "Motivo Invalido", typeOfSelection);
                   return regRes;
               }
 
@@ -68,6 +68,14 @@ public class SolicitudInspeccion {
                   ClienteDTO regCliT1 = new ClienteDTO();
 
                   regCliT1  = cargaClienteT1(nroCliente);
+
+                  if(regCliT1.getSucursal().trim().equals("9999")){
+                      regRes.setCodigo_retorno("15");
+                      regRes.setDescripcion_retorno("Cliente con datos inválidos para inspeccion ");
+                      RegistraRechazo(idCaso, nroCliente, sCodMotivo, iTarifaCliente,15, "Cliente con datos inválidos para inspeccion", typeOfSelection);
+                      return regRes;
+
+                  }
 
                   if (RegSolicitudT1(idCaso, nroCliente, sCodMotivo, typeOfSelection, iTarifaCliente, regCliT1)) {
                       regRes.setCodigo_retorno("OK");
@@ -147,7 +155,7 @@ public class SolicitudInspeccion {
         return iSubTarifa;
     }
 
-    private void RegistraRechazo(String idCaso, long nroCliente, String sCodMotivo, int tarifa,int codEstado, String descEstado)throws SQLException{
+    private void RegistraRechazo(String idCaso, long nroCliente, String sCodMotivo, int tarifa,int codEstado, String descEstado, String sTipoSeleccion)throws SQLException{
         if(codEstado==0 && (descEstado.trim().equals("") || descEstado == null))
             descEstado="Error Interno";
 
@@ -159,6 +167,7 @@ public class SolicitudInspeccion {
                 stmt.setInt(4, tarifa);
                 stmt.setInt(5, codEstado);
                 stmt.setString(6, descEstado.trim());
+                stmt.setString(7, sTipoSeleccion.trim());
 
                 stmt.executeUpdate();
             }
@@ -236,6 +245,8 @@ public class SolicitudInspeccion {
                         reg.setMarca_medidor(rs.getString(31));
                         reg.setModelo_medidor(rs.getString(32));
                         reg.setnDiasConfig(rs.getInt(33));
+                    }else{
+                        reg.setSucursal("9999");
                     }
                 }
             }
@@ -310,9 +321,14 @@ public class SolicitudInspeccion {
             }
             //Dependiendo del estado se genera solicitud
             if(iEstado==1 || iEstado==8){
-                if(iEstado==1){
+                if(typeOfSelection.trim().equals("Ty3ND")){
                     iEstado=8;
-                    sComentario="Insp.Solicitada con Ruta Lectura Asignada";
+                }else{
+                    iEstado=1;
+                }
+
+                if(iEstado==8){
+                    sComentario +=" Ruta Lectura Asignada";
                 }
                 regSol=ArmaNvaSolicitud(nroCliente, sCodMotivo, iEstado, sComentario, regCli);
                 if(!GrabaNvaSol(regSol, typeOfSelection, connection)){
@@ -637,9 +653,10 @@ public class SolicitudInspeccion {
             "tarifa, " +
             "cod_estado, " +
             "desc_estado, " +
+            "type_of_selection, " +
             "fecha_estado " +
             ")VALUES( " +
-            "?, ?, ?, ?, ?, TODAY) ";
+            "?, ?, ?, ?, ?, ?, ?, TODAY) ";
 
     private static final String SEL_INDIV_SOL = "SELECT COUNT(*) FROM inspecc:in_solicitud " +
             "WHERE numero_cliente = ? " +
@@ -656,7 +673,7 @@ public class SolicitudInspeccion {
             "c.nombre, c.tip_doc, c.nro_doc, " +
             "nvl(c.telefono, ' '), c.estado_cliente, c.cod_postal, " +
             "nvl(c.obs_dir, ' '), c.manzana, " +
-            "m.numero_medidor, m.marca_medidor, m.modelo_medidor, dt.dias_insp_mismo_or " +
+            "m.numero_medidor, m.marca_medidor, m.modelo_medidor, NVL(dt.dias_insp_mismo_or, 365) " +
             "FROM cliente c, OUTER medid m, inspecc:in_sucursal sp, inspecc:in_sucur_dias_tar dt " +
             "WHERE c.numero_cliente = ? " +
             "AND m.numero_cliente = c.numero_cliente " +
