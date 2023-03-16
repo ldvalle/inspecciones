@@ -28,6 +28,12 @@ public class SolicitudInspeccion {
 
         InspeSolicitudResponse regRes = new InspeSolicitudResponse();
 
+        if(idCaso.substring(0,3)!= "AR_"){
+            regRes.setCodigo_retorno("90");
+            regRes.setDescripcion_retorno("IdOpportunity Invalid For Argentina");
+            return regRes;
+        }
+
         if(nroCliente < 80000000) {
 
             iTarifaCliente=1;
@@ -576,15 +582,17 @@ public class SolicitudInspeccion {
             stmt.setString(17, reg.getDir_numero().trim());
             stmt.setString(18, reg.getDir_piso().trim());
             stmt.setString(19, reg.getDir_depto().trim());
+
             stmt.setInt(20, reg.getDir_cod_postal());
             stmt.setString(21, reg.getDir_cod_entre());
-            stmt.setString(22, reg.getDir_nom_entre().trim());
+            stmt.setString(22, reg.getDir_nom_entre());
             stmt.setString(23, reg.getDir_cod_entre1());
-            stmt.setString(24, reg.getDir_nom_entre1().trim());
+            stmt.setString(24, reg.getDir_nom_entre1());
+
             stmt.setString(25, reg.getDir_observacion());
             stmt.setString(26, reg.getDir_cod_barrio());
-            stmt.setString(27, reg.getDir_nom_barrio().trim());
-            stmt.setString(28, reg.getDir_manzana().trim());
+            stmt.setString(27, reg.getDir_nom_barrio());
+            stmt.setString(28, reg.getDir_manzana());
             stmt.setString(29, reg.getNombre().trim());
             stmt.setString(30, reg.getTip_doc());
             //stmt.setFloat(31, reg.getNro_doc());

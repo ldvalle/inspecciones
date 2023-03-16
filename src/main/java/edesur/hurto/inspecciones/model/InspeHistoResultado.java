@@ -33,14 +33,14 @@ public class InspeHistoResultado {
     private long    numeroCliente;
     private int     tipoInspeccion;
     private String  codMotivo;
-    private long    nroSolicitud;
+    private String  nroSolicitud; // El IdWorkOrderActivity
     private String  area;
     private String  codEstado;
     private String  descripEstado;
-    private long    idCaso;
+    private String  idCaso;
     private Date    fechaCreacion;
     private Boolean procesado;
-    private long    idInspeccion;
+    private String  idInspeccion; // El nro.de solicitud
 
     public long getNumeroCliente() {
         return numeroCliente;
@@ -66,11 +66,11 @@ public class InspeHistoResultado {
         this.codMotivo = codMotivo;
     }
 
-    public long getNroSolicitud() {
+    public String getNroSolicitud() {
         return nroSolicitud;
     }
 
-    public void setNroSolicitud(long nroSolicitud) {
+    public void setNroSolicitud(String nroSolicitud) {
         this.nroSolicitud = nroSolicitud;
     }
 
@@ -98,11 +98,11 @@ public class InspeHistoResultado {
         this.descripEstado = descripEstado;
     }
 
-    public long getIdCaso() {
+    public String getIdCaso() {
         return idCaso;
     }
 
-    public void setIdCaso(long idCaso) {
+    public void setIdCaso(String idCaso) {
         this.idCaso = idCaso;
     }
 
@@ -124,11 +124,11 @@ public class InspeHistoResultado {
         this.procesado = procesado;
     }
 
-    public long getIdInspeccion() {
+    public String getIdInspeccion() {
         return idInspeccion;
     }
 
-    public void setIdInspeccion(long idInspeccion) {
+    public void setIdInspeccion(String idInspeccion) {
         this.idInspeccion = idInspeccion;
     }
 

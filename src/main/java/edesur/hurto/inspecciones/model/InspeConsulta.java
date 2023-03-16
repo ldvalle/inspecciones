@@ -13,8 +13,9 @@ public class InspeConsulta {
     public String   descrip_estado_solicitud;
     public int  cod_estado_caso;
     public String desc_estado_caso;
-    public long id_caso;
+    public String id_caso;
     public Date fecha_caso;
     public Date fecha_solicitud;
-    public long nroSolicitud;
+    public String nroSolicitud;
+    public String workOrderId;
 }
