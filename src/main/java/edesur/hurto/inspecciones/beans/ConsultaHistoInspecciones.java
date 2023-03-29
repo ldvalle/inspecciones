@@ -70,24 +70,24 @@ public class ConsultaHistoInspecciones {
                         reg1.workOrderId = rs.getString(13);
 
                         //-- Traspaso
-                        reg2.setNumeroCliente(reg1.numero_cliente);
-                        reg2.setTipoInspeccion(reg1.tipo_extractor);
-                        reg2.setCodMotivo(reg1.cod_motivo);
-                        reg2.setNroSolicitud(reg1.workOrderId);
+                        reg2.setPointCode(reg1.numero_cliente);
+                        reg2.setTypeOrder(reg1.tipo_extractor);
+                        reg2.setTypeOfSelection(reg1.cod_motivo);
+                        reg2.setIdWorkOrderActivity(reg1.workOrderId);
                         reg2.setArea(reg1.sucursal);
                         if(reg1.cod_estado_caso < 1 || reg1.cod_estado_caso > 10){
-                            reg2.setCodEstado("KO");
-                            reg2.setDescripEstado(reg1.desc_estado_caso);
+                            reg2.setStatusResult("KO");
+                            reg2.setResultDescription(reg1.desc_estado_caso);
                         }else{
-                            reg2.setCodEstado("OK");
-                            reg2.setDescripEstado(reg1.descrip_estado_solicitud);
+                            reg2.setStatusResult("OK");
+                            reg2.setResultDescription(reg1.descrip_estado_solicitud);
                         }
-                        reg2.setIdCaso(reg1.id_caso);
-                        reg2.setFechaCreacion(reg1.fecha_caso);
-                        if(reg1.estado_solicitud != 3 && reg1.estado_solicitud != 7 && reg1.estado_solicitud != 9){
-                            reg2.setProcesado(false);
+                        reg2.setIdOpportunity(reg1.id_caso);
+                        reg2.setDtCreation(reg1.fecha_caso);
+                        if(reg1.estado_solicitud != 0 && reg1.estado_solicitud != 3 && reg1.estado_solicitud != 7 && reg1.estado_solicitud != 9){
+                            reg2.setFlgProcessed(false);
                         }else{
-                            reg2.setProcesado(true);
+                            reg2.setFlgProcessed(true);
                         }
                         reg2.setIdInspeccion(reg1.nroSolicitud);
 
@@ -105,7 +105,7 @@ public class ConsultaHistoInspecciones {
 
     private static final String SEL_CONSULTA_T1 = "SELECT DISTINCT t.numero_cliente, s.tipo_extractor, t.type_of_selection," +
             "s.sucursal, " +
-            "s.estado, t1.descripcion, " +
+            "NVL(s.estado, 0), t1.descripcion, " +
             "t.cod_estado, t.desc_estado, " +
             "t.id_caso, t.fecha_estado, s.fecha_solicitud, " +
             "1 || LPAD(s.nro_solicitud, 8, 0), " +
@@ -114,17 +114,18 @@ public class ConsultaHistoInspecciones {
             "       i.sucursal_rol || lpad(i.nro_inspeccion, 8, 0) || lpad(s.numero_cliente, 8, 0) " +
             "   ELSE '' " +
             "END workoder_id " +
-            "FROM sol_inspecciones t, OUTER (inspecc:in_solicitud s, inspecc:in_estado_solic t1) " +
+            "FROM sol_inspecciones t, OUTER (inspecc:in_solicitud s, inspecc:in_estado_solic t1, OUTER inspecc:in_inspeccion i) " +
             "WHERE t.numero_cliente = ? " +
             "AND t.tarifa = 1 " +
             "AND s.numero_cliente = t.numero_cliente " +
             "AND s.nro_solicitud = t.nro_solicitud_inspeccion " +
             "AND t1.codigo_estado = s.estado " +
+            "AND i.nro_solicitud = s.nro_solicitud " +
             "ORDER BY t.fecha_estado desc ";
 
     private static final String SEL_CONSULTA_T23 = "SELECT DISTINCT t.numero_cliente, s.tipo_extractor, t.type_of_selection, " +
             "s.sucursal, " +
-            "s.estado, t1.descripcion, " +
+            "NVL(s.estado, 0), t1.descripcion, " +
             "t.cod_estado, t.desc_estado, " +
             "t.id_caso, t.fecha_estado, s.fecha_solicitud, " +
             "TRIM(s.tarifa) || LPAD(s.nro_solicitud, 8, 0), " +
@@ -133,12 +134,13 @@ public class ConsultaHistoInspecciones {
             "       i.sucursal_rol || lpad(i.nro_inspeccion, 8, 0) || lpad(s.numero_cliente, 8, 0) " +
             "   ELSE '' " +
             "END workoder_id " +
-            "FROM sol_inspecciones t, OUTER (inspect23:i3_solicitud s, inspecc:in_estado_solic t1) " +
+            "FROM sol_inspecciones t, OUTER (inspect23:i3_solicitud s, inspecc:in_estado_solic t1, OUTER inspect23:i3_inspeccion i) " +
             "WHERE t.numero_cliente = ? " +
             "AND t.tarifa IN (2, 3) " +
             "AND s.numero_cliente = t.numero_cliente " +
             "AND s.nro_solicitud = t.nro_solicitud_inspeccion " +
             "AND t1.codigo_estado = s.estado " +
+            "AND i.nro_solicitud = s.nro_solicitud " +
             "ORDER BY t.fecha_estado desc ";
 
 

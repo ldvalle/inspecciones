@@ -14,64 +14,64 @@ import java.util.Date;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-        "numeroCliente",
-        "tipoInspeccion",
-        "codMotivo",
-        "nroSolicitud",
+        "pointCode",
+        "typeOrder",
+        "TypeOfSelection",
+        "idWorkOrderActivity",
         "area",
-        "codEstado",
-        "descripEstado",
-        "idCaso",
-        "fechaCreacion",
-        "procesado",
+        "statusResult",
+        "resultDescription",
+        "idOpportunity",
+        "dtCreation",
+        "flgProcessed",
         "idInspeccion"
 })
 
 
 public class InspeHistoResultado {
 
-    private long    numeroCliente;
-    private int     tipoInspeccion;
-    private String  codMotivo;
-    private String  nroSolicitud; // El IdWorkOrderActivity
+    private long    pointCode;
+    private int     typeOrder;
+    private String  typeOfSelection;
+    private String  idWorkOrderActivity; // El IdWorkOrderActivity
     private String  area;
-    private String  codEstado;
-    private String  descripEstado;
-    private String  idCaso;
-    private Date    fechaCreacion;
-    private Boolean procesado;
+    private String  statusResult;
+    private String  resultDescription;
+    private String  idOpportunity;
+    private Date    dtCreation;
+    private Boolean flgProcessed;
     private String  idInspeccion; // El nro.de solicitud
 
-    public long getNumeroCliente() {
-        return numeroCliente;
+    public long getPointCode() {
+        return pointCode;
     }
 
-    public void setNumeroCliente(long numeroCliente) {
-        this.numeroCliente = numeroCliente;
+    public void setPointCode(long pointCode) {
+        this.pointCode = pointCode;
     }
 
-    public int getTipoInspeccion() {
-        return tipoInspeccion;
+    public int getTypeOrder() {
+        return typeOrder;
     }
 
-    public void setTipoInspeccion(int tipoInspeccion) {
-        this.tipoInspeccion = tipoInspeccion;
+    public void setTypeOrder(int typeOrder) {
+        this.typeOrder = typeOrder;
     }
 
-    public String getCodMotivo() {
-        return codMotivo;
+    public String getTypeOfSelection() {
+        return typeOfSelection;
     }
 
-    public void setCodMotivo(String codMotivo) {
-        this.codMotivo = codMotivo;
+    public void setTypeOfSelection(String typeOfSelection) {
+        this.typeOfSelection = typeOfSelection;
     }
 
-    public String getNroSolicitud() {
-        return nroSolicitud;
+    public String getIdWorkOrderActivity() {
+        return idWorkOrderActivity;
     }
 
-    public void setNroSolicitud(String nroSolicitud) {
-        this.nroSolicitud = nroSolicitud;
+    public void setIdWorkOrderActivity(String idWorkOrderActivity) {
+        this.idWorkOrderActivity = idWorkOrderActivity;
     }
 
     public String getArea() {
@@ -82,46 +82,46 @@ public class InspeHistoResultado {
         this.area = area;
     }
 
-    public String getCodEstado() {
-        return codEstado;
+    public String getStatusResult() {
+        return statusResult;
     }
 
-    public void setCodEstado(String codEstado) {
-        this.codEstado = codEstado;
+    public void setStatusResult(String statusResult) {
+        this.statusResult = statusResult;
     }
 
-    public String getDescripEstado() {
-        return descripEstado;
+    public String getResultDescription() {
+        return resultDescription;
     }
 
-    public void setDescripEstado(String descripEstado) {
-        this.descripEstado = descripEstado;
+    public void setResultDescription(String resultDescription) {
+        this.resultDescription = resultDescription;
     }
 
-    public String getIdCaso() {
-        return idCaso;
+    public String getIdOpportunity() {
+        return idOpportunity;
     }
 
-    public void setIdCaso(String idCaso) {
-        this.idCaso = idCaso;
+    public void setIdOpportunity(String idOpportunity) {
+        this.idOpportunity = idOpportunity;
     }
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
-    @JsonProperty("fechaCreacion")
-    public Date getFechaCreacion() {
-        return fechaCreacion;
+    @JsonProperty("dtCreation")
+    public Date getDtCreation() {
+        return dtCreation;
     }
 
-    public void setFechaCreacion(Date fechaCreacion) {
-        this.fechaCreacion = fechaCreacion;
+    public void setDtCreation(Date dtCreation) {
+        this.dtCreation = dtCreation;
     }
 
-    public Boolean getProcesado() {
-        return procesado;
+    public Boolean getFlgProcessed() {
+        return flgProcessed;
     }
 
-    public void setProcesado(Boolean procesado) {
-        this.procesado = procesado;
+    public void setFlgProcessed(Boolean flgProcessed) {
+        this.flgProcessed = flgProcessed;
     }
 
     public String getIdInspeccion() {
@@ -136,15 +136,16 @@ public class InspeHistoResultado {
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("InspeHistoResponse{");
-        sb.append(", numeroCliente=").append(numeroCliente);
-        sb.append(", tipoInspeccion='").append(tipoInspeccion).append('\'');
-        sb.append(", codMotivo='").append(codMotivo).append('\'');
-        sb.append(", nroSolicitud=").append(nroSolicitud);
-        sb.append(", codEstado='").append(codEstado).append('\'');
-        sb.append(", descripEstado='").append(descripEstado).append('\'');
-        sb.append(", idCaso='").append(idCaso).append('\'');
-        sb.append(", fechaCreacion=").append(df.format(fechaCreacion));
-        sb.append(", procesado=").append(procesado);
+        sb.append(", pointCode=").append(pointCode);
+        sb.append(", typeOrder='").append(typeOrder).append('\'');
+        sb.append(", typeOfSelection='").append(typeOfSelection).append('\'');
+        sb.append(", idWorkOrderActivity='").append(idWorkOrderActivity).append('\'');
+        sb.append(", area='").append(area).append('\'');
+        sb.append(", statusResult='").append(statusResult).append('\'');
+        sb.append(", resultDescription='").append(resultDescription).append('\'');
+        sb.append(", idOpportunity='").append(idOpportunity).append('\'');
+        sb.append(", dtCreation=").append(df.format(dtCreation));
+        sb.append(", flgProcessed=").append(flgProcessed);
         sb.append(", idInspeccion=").append(idInspeccion);
         sb.append('}');
         return sb.toString();

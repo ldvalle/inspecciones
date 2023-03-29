@@ -28,7 +28,7 @@ public class SolicitudInspeccion {
 
         InspeSolicitudResponse regRes = new InspeSolicitudResponse();
 
-        if(idCaso.substring(0,3)!= "AR_"){
+        if(!idCaso.substring(0,3).equals("AR_")){
             regRes.setCodigo_retorno("90");
             regRes.setDescripcion_retorno("IdOpportunity Invalid For Argentina");
             return regRes;
