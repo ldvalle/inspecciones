@@ -693,7 +693,7 @@ public class SolicitudInspeccion {
 
     private static final String SEL_ULTIMA_SOL_T1 = "SELECT s1.nro_solicitud, s1.tipo_extractor, s1.estado,  " +
             "today - s1.fecha_estado dif_dias, " +
-            "s1.sucursal_rol_solic, s1.numero_cliente, NVL(i.ejecuto_inspeccion, 'N') inspec_ejec " +
+            "s1.sucursal_rol_solic, s1.numero_cliente, NVL(i.ejecuto_inspeccion, 'S') inspec_ejec " +
             "FROM inspecc:in_solicitud s1, OUTER inspecc:in_inspeccion i " +
             "WHERE s1.numero_cliente = ? " +
             "AND s1.fecha_estado = (SELECT MAX(s2.fecha_estado) " +
