@@ -9,7 +9,7 @@ import javax.validation.constraints.Size;
 public class ResponseBase {
     @Size(max = 10)
     @NotNull
-    private String codigo_retorno = "KO";
+    private String codigo_retorno = "OK";
 
     @Size(max = 100)
     @NotNull

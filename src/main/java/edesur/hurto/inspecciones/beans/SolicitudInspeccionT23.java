@@ -33,10 +33,10 @@ public class SolicitudInspeccionT23 {
         InspeSolicitudResponse regRes = new InspeSolicitudResponse();
 
         if(!ProcesoT23(idCaso, nroCliente, sCodMotivo, typeOfSelection)){
-            regRes.setCodigo_retorno("1");
+            regRes.setCodigo_retorno("KO");
             regRes.setDescripcion_retorno("Fallo carga de caso " + idCaso);
         }
-        regRes.setCodigo_retorno("0");
+        regRes.setCodigo_retorno("OK");
         regRes.setDescripcion_retorno("Solicitud T23 Registrada ");
 
         return regRes;

@@ -29,7 +29,7 @@ public class SolicitudInspeccion {
         InspeSolicitudResponse regRes = new InspeSolicitudResponse();
 
         if(!idCaso.substring(0,3).equals("AR_")){
-            regRes.setCodigo_retorno("90");
+            regRes.setCodigo_retorno("KO");
             regRes.setDescripcion_retorno("IdOpportunity Invalid For Argentina");
             return regRes;
         }
@@ -43,17 +43,17 @@ public class SolicitudInspeccion {
 
               switch(iEstadoCliente){
                   case -1:
-                    regRes.setCodigo_retorno("11");
+                    regRes.setCodigo_retorno("KO");
                     regRes.setDescripcion_retorno("Cliente " + nroCliente + " de caso " + idCaso + " No Existe.");
                     break;
                     
                   case 0:
-                    regRes.setCodigo_retorno("00");
+                    regRes.setCodigo_retorno("KO");
                     regRes.setDescripcion_retorno("Cliente T1 activo ");
                     break;
   
                   default:
-                    regRes.setCodigo_retorno("02");
+                    regRes.setCodigo_retorno("KO");
                     regRes.setDescripcion_retorno("Cliente T1 no activo ");
                     break;
               }
@@ -64,7 +64,7 @@ public class SolicitudInspeccion {
               }
 
               if(!validaMotivo(sCodMotivo)){
-                  regRes.setCodigo_retorno("12");
+                  regRes.setCodigo_retorno("KO");
                   regRes.setDescripcion_retorno("Codigo de Motivo Invalido ");
                   RegistraRechazo(idCaso, nroCliente, sCodMotivo, iTarifaCliente,12, "Motivo Invalido", typeOfSelection);
                   return regRes;
@@ -76,7 +76,7 @@ public class SolicitudInspeccion {
                   regCliT1  = cargaClienteT1(nroCliente);
 
                   if(regCliT1.getSucursal().trim().equals("9999")){
-                      regRes.setCodigo_retorno("15");
+                      regRes.setCodigo_retorno("KO");
                       regRes.setDescripcion_retorno("Cliente con datos inválidos para inspeccion ");
                       RegistraRechazo(idCaso, nroCliente, sCodMotivo, iTarifaCliente,15, "Cliente con datos inválidos para inspeccion", typeOfSelection);
                       return regRes;
@@ -96,7 +96,7 @@ public class SolicitudInspeccion {
 			     throw new RuntimeException(ex);
 		    }
         }else {
-            regRes.setCodigo_retorno("23");
+            regRes.setCodigo_retorno("KO");
             regRes.setDescripcion_retorno("Caso " + idCaso + " Entro como T1 pero es un T23");
         }
 
