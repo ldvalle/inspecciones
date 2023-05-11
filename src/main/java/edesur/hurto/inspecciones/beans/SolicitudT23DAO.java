@@ -85,7 +85,7 @@ public class SolicitudT23DAO {
             stmt.setLong(2,lNroInspeccion);
             stmt.setLong(3, regUltimaSol.getNro_solicitud());
             //stmt.setLong(4,nroCliente);
-            stmt.setLong(4,nroCliente);
+            stmt.setLong(4,auxNroCliente);
 
             stmt.executeUpdate();
         }
