@@ -32,6 +32,12 @@ public class SolicitudInspeccionT23 {
 
         InspeSolicitudResponse regRes = new InspeSolicitudResponse();
 
+        if(!idCaso.substring(0,3).equals("AR_")){
+            regRes.setCodigo_retorno("KO");
+            regRes.setDescripcion_retorno("IdOpportunity Invalid For Argentina");
+            return regRes;
+        }
+
         if(!ProcesoT23(idCaso, nroCliente, sCodMotivo, typeOfSelection)){
             regRes.setCodigo_retorno("KO");
             regRes.setDescripcion_retorno("Fallo carga de caso " + idCaso);
@@ -51,6 +57,7 @@ public class SolicitudInspeccionT23 {
         long lNroNvaSolicitud=0;
 
         int iEstado=0;
+        int     iEstadoUltimaSol;
         String sDescripcion="";
 
         try(Connection conectOra = dataSourceCandela.getConnection()) {
@@ -85,8 +92,10 @@ public class SolicitudInspeccionT23 {
                 regUltiSol=srvSol.getUltimaSolicitud(nroCliente, conectSyn);
 
                 if(regUltiSol.getNro_solicitud()>0){
-                    if(regUltiSol.getTipo_extractor()!=6 && regUltiSol.getEstado()==1){
+                    iEstadoUltimaSol=regUltiSol.getEstado();
+                    if(regUltiSol.getTipo_extractor()!=6 && iEstadoUltimaSol==1){
                         //Se anexa a la individual
+                        iEstado=2;
                         if (!srvSol.AnexaInspeccion(nroCliente, sCodMotivo, typeOfSelection, regUltiSol, iEstado, conectSyn)) {
                             return false;
                         }
@@ -94,8 +103,8 @@ public class SolicitudInspeccionT23 {
                         sDescripcion="Se anexó a solicitud masiva solicitada.";
                         lNroNvaSolicitud=regUltiSol.getNro_solicitud();
                     }
-                    iEstado=regUltiSol.getEstado();
-                    if(iEstado != 1 && iEstado !=3 && iEstado !=7){
+
+                    if(iEstadoUltimaSol != 1 && iEstadoUltimaSol !=3 && iEstadoUltimaSol !=7){
                         //Se registra la ocurrencia
                         if(! srvSol.RegistraOcurrencia(regUltiSol.getNro_solicitud(), typeOfSelection, conectSyn)){
                             return false;
@@ -105,7 +114,7 @@ public class SolicitudInspeccionT23 {
                     }
                     //Si tiene ultima inspe finalizada, se evalua los N dias
                     int iDiasConfig = TraeDiasConfig(conectSyn);
-                    if(iEstado==7 && regUltiSol.getDifDiasEntre() > iDiasConfig) {
+                    if(iEstadoUltimaSol==7 && regUltiSol.getDifDiasEntre() > iDiasConfig) {
                         iEstado=1;
                         sDescripcion="Inspeccion Solicitada";
                     }else{

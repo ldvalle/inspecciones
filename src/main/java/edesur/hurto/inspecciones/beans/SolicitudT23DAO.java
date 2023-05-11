@@ -80,7 +80,6 @@ public class SolicitudT23DAO {
 
             stmt.executeUpdate();
         }
-
         try(PreparedStatement stmt = connection.prepareStatement(INS_INSPE_ANEXADA)) {
             stmt.setString(1,regUltimaSol.getSucursal_rol_solic());
             stmt.setLong(2,lNroInspeccion);
@@ -166,8 +165,9 @@ public class SolicitudT23DAO {
             stmt.setString(17, reg.getDir_numero().trim());
             stmt.setString(18, reg.getDir_piso().trim());
             stmt.setString(19, reg.getDir_depto().trim());
-            stmt.setInt(20, reg.getDir_cod_postal());
-            stmt.setString(21, reg.getDir_cod_entre().trim());
+            //stmt.setInt(20, reg.getDir_cod_postal());
+            stmt.setObject(20, reg.getDir_cod_postal(), Types.INTEGER);
+            stmt.setString(21, reg.getDir_cod_entre());
             stmt.setString(22, reg.getDir_nom_entre().trim());
             stmt.setString(23, reg.getDir_cod_entre1().trim());
             stmt.setString(24, reg.getDir_nom_entre1().trim());
@@ -245,8 +245,7 @@ public class SolicitudT23DAO {
 
     private static final String SEL_SECUEN = "SELECT valor + 1 FROM secuen " +
             "WHERE sucursal = ? " +
-            "AND codigo = 'INST23' " +
-            "FOR UPDATE ";
+            "AND codigo = 'INST23' ";
 
     private static final String UPD_SECUEN = "UPDATE secuen SET " +
             "valor = valor +1 " +
