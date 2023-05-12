@@ -81,7 +81,7 @@ public class SolicitudInspeccionT23 {
                 //Verifica no tener individual pendiente
                 if(TieneIndividualPte(nroCliente, conectSyn)){
                     iEstado=14;
-                    sDescripcion="Tiene inspeccion Pendiente de Carga.";
+                    sDescripcion="Tiene inspeccion Pendiente.";
                     if(!InsertaCaso(idCaso,nroCliente,sCodMotivo, typeOfSelection,regCli.getTipoTarifaT23(), iEstado, sDescripcion, 0, conectSyn)){
                         return false;
                     }
@@ -227,9 +227,16 @@ public class SolicitudInspeccionT23 {
 
     private boolean TieneIndividualPte(long nroCliente, Connection connection)throws SQLException{
         int iCant=0;
+        long auxNroCliente=0;
+
+        if(nroCliente > 80000000 && nroCliente < 80500000) {
+            auxNroCliente = nroCliente - 80000000;
+        }else{
+            auxNroCliente = nroCliente;
+        }
 
         try(PreparedStatement stmt = connection.prepareStatement(SEL_INDIV_SOL)) {
-            stmt.setLong(1,nroCliente);
+            stmt.setLong(1, auxNroCliente);
             try(ResultSet rs = stmt.executeQuery()) {
                 if(rs.next()){
                     iCant=rs.getInt(1);
