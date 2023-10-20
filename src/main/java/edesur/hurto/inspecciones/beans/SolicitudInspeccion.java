@@ -4,6 +4,7 @@ import edesur.hurto.inspecciones.model.InspeSolicitudRequest;
 import edesur.hurto.inspecciones.model.InspeSolicitudResponse;
 import edesur.hurto.inspecciones.model.ClienteDTO;
 import edesur.hurto.inspecciones.model.InspeSolicitudDTO;
+import org.apache.camel.Header;
 
 import javax.sql.DataSource;
 import java.sql.*;
@@ -628,6 +629,14 @@ public class SolicitudInspeccion {
         }
 
         return nroSol;
+    }
+
+    public InspeSolicitudResponse cierreMasivoResponse(){
+        InspeSolicitudResponse reg = new InspeSolicitudResponse();
+        reg.setCodigo_retorno("OK");
+        reg.setDescripcion_retorno("Lote Recibido");
+
+        return reg;
     }
 
     private static final String SEL_VALIDA_T1 = "SELECT estado_cliente FROM cliente " +

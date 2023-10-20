@@ -11,13 +11,14 @@ public class InInspeRouteBuilder extends BaseRouteBuilder {
         super.configure();
 
         from("direct:setSolicitudInspeccion")
+
                 .routeId("setSolicitudInspeccion")
 
                 .setHeader("idCaso", simple("${body.getIdCaso}"))
                 .setHeader("numeroCliente", simple("${body.getNumeroCliente}"))
                 .setHeader("typeOfSelection", simple("${body.getTypeOfSelection}"))
 
-                .log(LoggingLevel.DEBUG, logname, "Solicitud Inspeccion para cliente ${header.numero_cliente}")
+                .log(LoggingLevel.DEBUG, logname, "Caso ${header.idCaso} Sol Inspeccion para cliente ${header.numeroCliente}")
                 .setHeader("response", body())
                 .transacted()
 

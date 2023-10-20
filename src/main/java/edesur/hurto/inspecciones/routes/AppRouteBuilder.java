@@ -3,6 +3,8 @@ package edesur.hurto.inspecciones.routes;
 import org.apache.camel.LoggingLevel;
 import org.apache.camel.component.cxf.common.message.CxfConstants;
 
+import static edesur.hurto.inspecciones.routes.CamelStrings.stringWithHeaders;
+
 public class AppRouteBuilder extends BaseRouteBuilder {
     @Override
     public void configure() throws Exception {
@@ -13,6 +15,9 @@ public class AppRouteBuilder extends BaseRouteBuilder {
                 .choice()
                     .when(header(CxfConstants.OPERATION_NAME).isEqualTo("SolicitudInspeccion"))
                         .to("direct:setSolicitudInspeccion")
+
+                    .when(header(CxfConstants.OPERATION_NAME).isEqualTo("SolicitudMultiInspeccion"))
+                        .to("direct:setMultiSolInspeccion")
 
                     .when(header(CxfConstants.OPERATION_NAME).isEqualTo("ConsultaInspeccion"))
                         .to("direct:setConsultaInspeccion")
@@ -26,7 +31,7 @@ public class AppRouteBuilder extends BaseRouteBuilder {
                     .when(header(CxfConstants.OPERATION_NAME).isEqualTo("getEventWO"))
                         .to("direct:setConsultaWOevent")
                     .otherwise()
-                        .log(LoggingLevel.ERROR, "Operacion no implementada: " + header(CxfConstants.OPERATION_NAME))
+                        .log(LoggingLevel.ERROR, stringWithHeaders("Operacion no implementada:%s",CxfConstants.OPERATION_NAME))
                 .end();
     }
 }

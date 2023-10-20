@@ -22,6 +22,19 @@ public class InspecService {
     }
 
     @POST
+    @Path("/MultiSolInspeccion")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+/*
+    public InspeSolicitudResponse SolicitudMultiInspeccion(@NotNull @Valid InspeSolicitudRequest[] request) {
+        return null;
+    }
+*/
+    public InspeSolicitudResponse SolicitudMultiInspeccion(@NotNull @Valid InspeMultiSolRequest request) {
+        return null;
+    }
+
+    @POST
     @Path("/ConsultaInspeccion")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
