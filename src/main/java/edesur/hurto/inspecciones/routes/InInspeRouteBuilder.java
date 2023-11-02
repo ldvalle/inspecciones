@@ -47,16 +47,5 @@ public class InInspeRouteBuilder extends BaseRouteBuilder {
                 .end();
 */
         }
-/*
-                .to("sql:classpath:sql/rddNotiPago.sql?dataSource=#SynergiaDS&outputType=SelectOne&outputClass=edesur.rdd.srv.model.RddNotiResponse")
-                .choice()
-                    .when().simple("${body.codigo_retorno} == '000'")
-                        .log(LoggingLevel.DEBUG, logname, "Pago Imputado")
-                    .otherwise()
-                        .log(LoggingLevel.DEBUG, logname, "Notificacion Abortada")
-
-
-                .end();
-*/
 
 }

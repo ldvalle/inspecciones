@@ -19,6 +19,9 @@ public class AppRouteBuilder extends BaseRouteBuilder {
                     .when(header(CxfConstants.OPERATION_NAME).isEqualTo("SolicitudMultiInspeccion"))
                         .to("direct:setMultiSolInspeccion")
 
+                    .when(header(CxfConstants.OPERATION_NAME).isEqualTo("SolicitudMasiva"))
+                        .to("direct:setCargaMasivaInspeccion")
+
                     .when(header(CxfConstants.OPERATION_NAME).isEqualTo("ConsultaInspeccion"))
                         .to("direct:setConsultaInspeccion")
 

@@ -21,18 +21,24 @@ public class InspecService {
         return null;
     }
 
+    //Este anda
     @POST
     @Path("/MultiSolInspeccion")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-/*
-    public InspeSolicitudResponse SolicitudMultiInspeccion(@NotNull @Valid InspeSolicitudRequest[] request) {
-        return null;
-    }
-*/
     public InspeSolicitudResponse SolicitudMultiInspeccion(@NotNull @Valid InspeMultiSolRequest request) {
         return null;
     }
+
+    // Este es con el Json que ellos mandaron
+    @POST
+    @Path("/SolicitudMasiva")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public InspeSolicitudResponse SolicitudMasiva(@NotNull @Valid ListaMultiSolRequest request) {
+        return null;
+    }
+
 
     @POST
     @Path("/ConsultaInspeccion")
