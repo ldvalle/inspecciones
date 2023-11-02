@@ -9,6 +9,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import java.util.List;
 
 @Path("/")
 public class InspecService {
@@ -35,7 +36,8 @@ public class InspecService {
     @Path("/SolicitudMasiva")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public InspeSolicitudResponse SolicitudMasiva(@NotNull @Valid ListaMultiSolRequest request) {
+    public InspeSolicitudResponse SolicitudMasiva(@NotNull @Valid List<MultiSolRequest> request) {
+    //public InspeSolicitudResponse SolicitudMasiva(@NotNull @Valid ListaMultiSolRequest request) {
         return null;
     }
 

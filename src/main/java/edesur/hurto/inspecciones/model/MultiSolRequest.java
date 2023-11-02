@@ -12,12 +12,15 @@ import javax.validation.constraints.NotNull;
 
 public class MultiSolRequest {
     @NotNull
+    @JsonProperty("SPID")
     private String SPID;
 
     @NotNull
+    @JsonProperty("TypeOfSelection")
     private String TypeOfSelection;
 
     @NotNull
+    @JsonProperty("IdOpportunity")
     private String IdOpportunity;
 
     //Setters & Getters
