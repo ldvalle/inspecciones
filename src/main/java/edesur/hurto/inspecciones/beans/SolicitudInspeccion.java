@@ -570,19 +570,19 @@ public class SolicitudInspeccion {
             stmt.setInt(4,reg.getPlan());
             stmt.setInt(5,reg.getRadio());
             stmt.setLong(6,reg.getCorrelativo_ruta());
-            stmt.setString(7,reg.getRol_solicitud().trim());
-            stmt.setString(8, reg.getSucursal_rol_solic().trim());
+            stmt.setString(7,reg.getRol_solicitud());
+            stmt.setString(8, reg.getSucursal_rol_solic());
             stmt.setString(9, reg.getDir_provincia());
-            stmt.setString(10, reg.getDir_nom_provincia().trim());
+            stmt.setString(10, reg.getDir_nom_provincia());
             stmt.setString(11, reg.getDir_partido());
-            stmt.setString(12, reg.getDir_nom_partido().trim());
+            stmt.setString(12, reg.getDir_nom_partido());
             stmt.setString(13, reg.getDir_comuna());
-            stmt.setString(14, reg.getDir_nom_comuna().trim());
+            stmt.setString(14, reg.getDir_nom_comuna());
             stmt.setString(15, reg.getDir_cod_calle());
-            stmt.setString(16, reg.getDir_nom_calle().trim());
-            stmt.setString(17, reg.getDir_numero().trim());
-            stmt.setString(18, reg.getDir_piso().trim());
-            stmt.setString(19, reg.getDir_depto().trim());
+            stmt.setString(16, reg.getDir_nom_calle());
+            stmt.setString(17, reg.getDir_numero());
+            stmt.setString(18, reg.getDir_piso());
+            stmt.setString(19, reg.getDir_depto());
 
             stmt.setInt(20, reg.getDir_cod_postal());
             stmt.setString(21, reg.getDir_cod_entre());
@@ -594,19 +594,19 @@ public class SolicitudInspeccion {
             stmt.setString(26, reg.getDir_cod_barrio());
             stmt.setString(27, reg.getDir_nom_barrio());
             stmt.setString(28, reg.getDir_manzana());
-            stmt.setString(29, reg.getNombre().trim());
+            stmt.setString(29, reg.getNombre());
             stmt.setString(30, reg.getTip_doc());
             //stmt.setFloat(31, reg.getNro_doc());
             stmt.setObject(31, reg.getNro_doc(), Types.FLOAT);
-            stmt.setString(32, reg.getTelefono().trim());
+            stmt.setString(32, reg.getTelefono());
             stmt.setString(33, reg.getMot_denuncia());
-            stmt.setString(34, reg.getObservacion1().trim());
+            stmt.setString(34, reg.getObservacion1());
             stmt.setString(35, reg.getMarca_medidor());
             stmt.setString(36, reg.getModelo_medidor());
             stmt.setLong(37, reg.getNro_medidor());
             stmt.setInt(38, iTipoExtractor);
-            stmt.setString(39, esIndividual.trim());
-            stmt.setString(40, esGrupo.trim());
+            stmt.setString(39, esIndividual);
+            stmt.setString(40, esGrupo);
 
             stmt.executeUpdate();
         }
@@ -682,12 +682,12 @@ public class SolicitudInspeccion {
 
     private static final String SEL_CLIENTE_T1 = "SELECT c.sucursal, c.sector, c.zona, " +
             "c.correlativo_ruta, c.provincia, c.nom_provincia, " +
-            "c.partido, c.nom_partido, c.comuna, " +
-            "c.nom_comuna, c.cod_calle, c.nom_calle, " +
-            "c.nro_dir, nvl(c.piso_dir, ' '), nvl(c.depto_dir, ' '), " +
-            "c.cod_entre, c.nom_entre, c.cod_entre1, " +
-            "c.nom_entre1, c.barrio, c.nom_barrio, " +
-            "c.nombre, c.tip_doc, c.nro_doc, " +
+            "NVL(c.partido, ' '), NVL(c.nom_partido, ' '), NVL(c.comuna, ' '), " +
+            "NVL(c.nom_comuna, ' '), NVL(c.cod_calle, ' '), NVL(c.nom_calle, ' '), " +
+            "NVL(c.nro_dir, ' '), nvl(c.piso_dir, ' '), nvl(c.depto_dir, ' '), " +
+            "NVL(c.cod_entre, ' '), NVL(c.nom_entre, ' '), NVL(c.cod_entre1, ' '), " +
+            "NVL(c.nom_entre1, ' '), NVL(c.barrio, ' '), NVL(c.nom_barrio, ' '), " +
+            "c.nombre, NVL(c.tip_doc, ' '), c.nro_doc, " +
             "nvl(c.telefono, ' '), c.estado_cliente, c.cod_postal, " +
             "nvl(c.obs_dir, ' '), c.manzana, " +
             "m.numero_medidor, m.marca_medidor, m.modelo_medidor, NVL(dt.dias_insp_mismo_or, 365) " +

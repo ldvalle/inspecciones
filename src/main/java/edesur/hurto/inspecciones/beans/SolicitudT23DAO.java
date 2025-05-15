@@ -146,50 +146,50 @@ public class SolicitudT23DAO {
         try(PreparedStatement stmt = connection.prepareStatement(INS_SOLICITUD)) {
             stmt.setInt(1, reg.getEstado());
             stmt.setLong(2, reg.getNumero_cliente());
-            stmt.setString(3, reg.getSucursal_rol_solic().trim());
+            stmt.setString(3, reg.getSucursal_rol_solic());
             stmt.setInt(4, reg.getPlan());
             stmt.setInt(5, reg.getRadio());
             stmt.setLong(6, reg.getCorrelativo_ruta());
             stmt.setString(7,"GLOBAL");
-            stmt.setString(8, reg.getSucursal_rol_solic().trim());
-            stmt.setString(9, reg.getDir_provincia().trim());
-            stmt.setString(10, reg.getDir_nom_provincia().trim());
-            stmt.setString(11, reg.getDir_partido().trim());
+            stmt.setString(8, reg.getSucursal_rol_solic());
+            stmt.setString(9, reg.getDir_provincia());
+            stmt.setString(10, reg.getDir_nom_provincia());
+            stmt.setString(11, reg.getDir_partido());
             //stmt.setString(12, reg.getDir_nom_partido().trim());
             stmt.setString(12, " ");
             //stmt.setString(13, reg.getDir_comuna().trim());
             stmt.setString(13, " ");
-            stmt.setString(14, reg.getDir_nom_comuna().trim());
-            stmt.setString(15, reg.getDir_cod_calle().trim());
-            stmt.setString(16, reg.getDir_nom_calle().trim());
-            stmt.setString(17, reg.getDir_numero().trim());
-            stmt.setString(18, reg.getDir_piso().trim());
-            stmt.setString(19, reg.getDir_depto().trim());
+            stmt.setString(14, reg.getDir_nom_comuna());
+            stmt.setString(15, reg.getDir_cod_calle());
+            stmt.setString(16, reg.getDir_nom_calle());
+            stmt.setString(17, reg.getDir_numero());
+            stmt.setString(18, reg.getDir_piso());
+            stmt.setString(19, reg.getDir_depto());
             //stmt.setInt(20, reg.getDir_cod_postal());
             stmt.setObject(20, reg.getDir_cod_postal(), Types.INTEGER);
             stmt.setString(21, reg.getDir_cod_entre());
-            stmt.setString(22, reg.getDir_nom_entre().trim());
-            stmt.setString(23, reg.getDir_cod_entre1().trim());
-            stmt.setString(24, reg.getDir_nom_entre1().trim());
+            stmt.setString(22, reg.getDir_nom_entre());
+            stmt.setString(23, reg.getDir_cod_entre1());
+            stmt.setString(24, reg.getDir_nom_entre1());
             sAux=reg.getDir_observacion();
             if(sAux == null){
                 //stmt.setString(25, " ");
                 stmt.setNull(25, Types.VARCHAR);
             }else{
-                stmt.setString(25, reg.getDir_observacion().trim());
+                stmt.setString(25, reg.getDir_observacion());
             }
             //stmt.setString(26, reg.getDir_cod_barrio().trim());
             stmt.setString(26, " ");
             //stmt.setString(27, reg.getDir_nom_barrio().trim());
             stmt.setString(27, " ");
-            stmt.setString(28, reg.getDir_manzana().trim());
+            stmt.setString(28, reg.getDir_manzana());
             stmt.setLong(29, reg.getNro_ult_inspec());
             //stmt.setTimestamp(30, new Timestamp(reg.getFecha_ult_inspec().getTime()));
-            stmt.setString(30, reg.getNombre().trim());
-            stmt.setString(31, reg.getTip_doc().trim());
+            stmt.setString(30, reg.getNombre());
+            stmt.setString(31, reg.getTip_doc());
             stmt.setFloat(32, reg.getNro_doc());
             stmt.setString(33, reg.getTelefono());
-            stmt.setString(34, reg.getMot_denuncia().trim());
+            stmt.setString(34, reg.getMot_denuncia());
 
             sAux=reg.getObservacion1();
             if(sAux== null){
@@ -201,10 +201,10 @@ public class SolicitudT23DAO {
             }
 
             stmt.setInt(36, reg.getTipoTarifaT23());
-            stmt.setString(37, reg.getSucursalClienteT23().trim());
+            stmt.setString(37, reg.getSucursalClienteT23());
             stmt.setInt(38, iTipoExtractor);
-            stmt.setString(39, esIndividual.trim());
-            stmt.setString(40, esGrupo.trim());
+            stmt.setString(39, esIndividual);
+            stmt.setString(40, esGrupo);
 
             stmt.executeUpdate();
         }
